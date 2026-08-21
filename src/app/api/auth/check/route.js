@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -13,7 +15,7 @@ export async function GET() {
       );
     }
     
-    const response = await fetch('http://localhost:8000/api-auth/check/', {
+    const response = await fetch(`${API_BASE_URL}/api-auth/check/`, {
       headers: { Cookie: `sessionid=${session.value}` },
       cache: 'no-store',
     });

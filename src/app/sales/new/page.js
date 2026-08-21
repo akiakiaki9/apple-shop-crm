@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navigation from '../../../../components/layout/Navigation';
 import api from '../../../../lib/api';
@@ -8,7 +8,7 @@ import Button from '../../../../components/ui/Button';
 import Modal from '../../../../components/ui/Modal';
 import './new-sale.css';
 
-export default function NewSalePage() {
+function NewSaleForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedDeviceId = searchParams.get('device');
@@ -592,5 +592,13 @@ export default function NewSalePage() {
         </Modal>
       </div>
     </>
+  );
+}
+
+export default function NewSalePage() {
+  return (
+    <Suspense fallback={<div className="loading-state">Загрузка формы продажи...</div>}>
+      <NewSaleForm />
+    </Suspense>
   );
 }

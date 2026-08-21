@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { API_BASE_URL } from '../../lib/api';
 import {
   FaHome,
   FaBoxes,
@@ -58,7 +59,7 @@ export default function Navigation() {
           .find(row => row.startsWith('csrftoken='))
           ?.split('=')[1];
 
-        const response = await fetch('http://localhost:8000/api-auth/logout/', {
+        const response = await fetch(`${API_BASE_URL}/api-auth/logout/`, {
           method: 'POST',
           headers: {
             'X-CSRFToken': csrfToken || '',

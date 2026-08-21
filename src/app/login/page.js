@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   async function fetchCSRFToken() {
-    const response = await fetch('http://localhost:8000/api-auth/csrf/', {
+    const response = await fetch(`${API_BASE_URL}/api-auth/csrf/`, {
       credentials: 'include',
     });
 
@@ -30,7 +31,7 @@ export default function LoginPage() {
     try {
       const token = await fetchCSRFToken();
 
-      const response = await fetch('http://localhost:8000/api-auth/login/', {
+      const response = await fetch(`${API_BASE_URL}/api-auth/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
