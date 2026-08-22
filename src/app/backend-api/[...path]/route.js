@@ -8,12 +8,16 @@ async function proxy(request, { params }) {
   const target = `${API_ORIGIN}/${path.join('/')}/${requestUrl.search}`;
   const headers = new Headers(request.headers);
   headers.delete('host');
+  headers.delete('content-length');
+  headers.delete('connection');
+  headers.delete('transfer-encoding');
 
   const response = await fetch(target, {
     method: request.method,
     headers,
     body: ['GET', 'HEAD'].includes(request.method) ? undefined : await request.arrayBuffer(),
     redirect: 'manual',
+    duplex: 'half',
   });
 
   const responseHeaders = new Headers(response.headers);
