@@ -146,6 +146,11 @@ CSRF_TRUSTED_ORIGINS += [
     for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
     if origin.strip()
 ]
+CSRF_TRUSTED_ORIGINS += [
+    'https://api.cconnect.uz',
+    'https://apple-shop-crm-eight.vercel.app',
+]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'True') == 'True'
