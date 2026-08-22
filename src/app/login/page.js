@@ -104,7 +104,7 @@ export default function LoginPage() {
         </form>
 
         <div className="login-footer">
-          <small>Войдите с учетными данными администратора</small>
+          <small>Демо доступ: admin / admin123</small>
         </div>
       </div>
 
