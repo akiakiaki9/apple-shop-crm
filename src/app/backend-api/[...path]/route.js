@@ -5,8 +5,7 @@ const API_ORIGIN = 'https://api.cconnect.uz';
 async function proxy(request, { params }) {
   const { path } = await params;
   const requestUrl = new URL(request.url);
-  const trailingSlash = requestUrl.pathname.endsWith('/') ? '/' : '';
-  const target = `${API_ORIGIN}/${path.join('/')}${trailingSlash}${requestUrl.search}`;
+  const target = `${API_ORIGIN}/${path.join('/')}/${requestUrl.search}`;
   const headers = new Headers(request.headers);
   headers.delete('host');
 
