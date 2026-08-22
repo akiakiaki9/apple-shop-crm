@@ -1,0 +1,366 @@
+/* Navigation Container */
+.navigation {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Navigation Content */
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    position: relative;
+}
+
+/* Brand */
+.nav-brand a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #1a1a2e;
+    font-weight: 700;
+    font-size: 18px;
+    gap: 10px;
+    transition: color 0.2s ease;
+}
+
+.nav-brand a:hover {
+    color: #4a90e2;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+}
+
+.nav-brand a:hover .brand-logo {
+    transform: scale(1.05) rotate(-5deg);
+}
+
+.brand-text {
+    display: inline;
+    letter-spacing: -0.5px;
+    font-size: 18px;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+    color: #1a1a2e;
+    font-size: 24px;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    text-decoration: none;
+    color: #4a4a6a;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    position: relative;
+}
+
+.nav-links li a .nav-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.nav-links li a .nav-label {
+    display: inline;
+}
+
+.nav-links li a:hover {
+    background: #f3f4f6;
+    color: #1a1a2e;
+    transform: translateY(-1px);
+}
+
+.nav-links li a.active {
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.nav-links li a.active:hover {
+    background: #3a7bc8;
+    transform: translateY(-1px);
+}
+
+/* Logout Button */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.btn-logout .nav-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.btn-logout:hover:not(:disabled) {
+    background: #fecaca;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+.btn-logout:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-logout:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .nav-links li a {
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+
+    .btn-logout {
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 85%;
+        max-width: 340px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        padding: 80px 24px 24px;
+        gap: 6px;
+        align-items: stretch;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+        z-index: 999;
+        overflow-y: auto;
+    }
+
+    .nav-links.open {
+        right: 0;
+        animation: slideIn 0.3s ease;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links li a {
+        padding: 14px 16px;
+        font-size: 16px;
+        width: 100%;
+        text-align: left;
+        border-radius: 10px;
+        gap: 12px;
+    }
+
+    .nav-links li a .nav-icon {
+        font-size: 20px;
+    }
+
+    .nav-links li a.active {
+        background: #4a90e2;
+        color: white;
+    }
+
+    .logout-item {
+        margin-top: auto;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 12px;
+    }
+
+    .btn-logout {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 16px;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .btn-logout .nav-icon {
+        font-size: 20px;
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    .nav-brand a {
+        font-size: 16px;
+        gap: 8px;
+    }
+
+    .brand-logo {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navigation {
+        padding: 0 12px;
+    }
+
+    .nav-content {
+        height: 56px;
+    }
+
+    .brand-logo {
+        width: 28px;
+        height: 28px;
+    }
+
+    .nav-links {
+        max-width: 300px;
+        padding: 70px 16px 16px;
+        width: 100%;
+    }
+
+    .nav-links li a {
+        font-size: 15px;
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .nav-links li a .nav-icon {
+        font-size: 18px;
+    }
+
+    .btn-logout {
+        font-size: 15px;
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .btn-logout .nav-icon {
+        font-size: 18px;
+    }
+}
+
+/* Scrollbar styling for mobile menu */
+.nav-links::-webkit-scrollbar {
+    width: 4px;
+}
+
+.nav-links::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.nav-links::-webkit-scrollbar-thumb {
+    background: #4a90e2;
+    border-radius: 2px;
+}
+
+.nav-links::-webkit-scrollbar-thumb:hover {
+    background: #3a7bc8;
+}
