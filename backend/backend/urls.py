@@ -26,7 +26,6 @@ class CsrfView(APIView):
         return Response({'csrfToken': get_token(request)})
 
 
-@method_decorator(csrf_protect, name='dispatch')
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
