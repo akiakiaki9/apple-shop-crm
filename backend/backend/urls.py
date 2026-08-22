@@ -44,7 +44,6 @@ class LoginView(APIView):
         return Response({'username': user.get_username()})
 
 
-@method_decorator(csrf_protect, name='dispatch')
 class LogoutView(APIView):
     permission_classes = [AllowAny]
 
