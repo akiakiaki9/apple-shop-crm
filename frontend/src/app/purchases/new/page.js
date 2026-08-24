@@ -45,7 +45,12 @@ export default function NewPurchasePage() {
     'Black', 'White', 'Blue', 'Red', 'Green',
     'Yellow', 'Purple', 'Natural', 'Gold', 'Silver',
     'Pink', 'Orange', 'Gray', 'Brown', 'Coral',
-    'Titanium', 'Graphite', 'Sierra Blue', 'Alpine Green'
+    'Titanium', 'Graphite', 'Sierra Blue', 'Alpine Green',
+    'Starry Purple MEANA', 'Nebula Red MEANA', 'Sapphire Blue RK',
+    'Aurora Gold RK', 'Lumina Forest MMN', 'Eclipse BLUE MMN',
+    'Cappuccino Brown RK', 'Ice White RK', 'Plum Purple MMN',
+    'Ice White RK', 'Ice Blue MMN', 'Aurora Green RK',
+    'Mist White RK', 'Aurora Blue RK'
   ];
 
   const handleChange = (e) => {
