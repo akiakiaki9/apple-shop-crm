@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../../components/layout/Navigation';
 import api from '../../../../lib/api';
-import Input from '../../../../components/ui/Input';
-import Button from '../../../../components/ui/Button';
 import Modal from '../../../../components/ui/Modal';
 import './new-purchase.css';
 
