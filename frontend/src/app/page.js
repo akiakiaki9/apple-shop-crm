@@ -55,6 +55,7 @@ export default function DashboardPage() {
         stock_value: stockValue,
         total_revenue: totalRevenue,
         total_profit: totalProfit,
+        total_sales: sales.length,
       });
     } catch (error) {
       console.error('Ошибка загрузки:', error);
@@ -69,12 +70,14 @@ export default function DashboardPage() {
     return Number(amount).toLocaleString() + ' сум';
   };
 
-  const StatCard = ({ icon, title, value, color, subtitle }) => (
+  const StatCard = ({ icon, title, value, color, subtitle, small = false }) => (
     <div className={`stat-card stat-card-${color}`}>
       <div className="stat-icon">{icon}</div>
       <div className="stat-content">
         <h3 className="stat-title">{title}</h3>
-        <div className="stat-value">{value}</div>
+        <div className={`stat-value ${small ? 'stat-value-small' : ''}`}>
+          {value}
+        </div>
         {subtitle && <div className="stat-subtitle">{subtitle}</div>}
       </div>
     </div>
@@ -99,19 +102,20 @@ export default function DashboardPage() {
       <Navigation />
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <div>
+          <div className="dashboard-header-left">
             <h1 className="dashboard-title">📊 Панель управления</h1>
             <p className="dashboard-subtitle">Общая статистика вашего магазина</p>
           </div>
           <button onClick={loadDashboard} className="btn-refresh">
-            🔄 Обновить
+            <span className="btn-refresh-icon">🔄</span>
+            <span className="btn-refresh-text">Обновить</span>
           </button>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">⚠️</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -140,6 +144,7 @@ export default function DashboardPage() {
             title="Доп. расходы"
             value={formatMoney(stats.total_extra_expenses)}
             color="purple"
+            small
           />
         </div>
 
@@ -150,18 +155,21 @@ export default function DashboardPage() {
             title="Деньги в товаре"
             value={formatMoney(stats.stock_value)}
             color="orange"
+            small
           />
           <StatCard
             icon="💵"
             title="Общая выручка"
             value={formatMoney(stats.total_revenue)}
             color="teal"
+            small
           />
           <StatCard
             icon="📈"
             title="Общая прибыль"
             value={formatMoney(stats.total_profit)}
             color={stats.total_profit >= 0 ? 'green' : 'red'}
+            small
           />
         </div>
 
@@ -201,8 +209,14 @@ export default function DashboardPage() {
             </div>
             <p className="info-number">{stats.total_devices}</p>
             <div className="info-details">
-              <span>В наличии: <strong>{stats.in_stock}</strong></span>
-              <span>Продано: <strong>{stats.sold}</strong></span>
+              <span className="info-detail-item">
+                <span className="info-detail-label">В наличии:</span>
+                <strong className="info-detail-value">{stats.in_stock}</strong>
+              </span>
+              <span className="info-detail-item">
+                <span className="info-detail-label">Продано:</span>
+                <strong className="info-detail-value">{stats.sold}</strong>
+              </span>
             </div>
           </div>
           <div className="info-card">
@@ -211,16 +225,16 @@ export default function DashboardPage() {
               <h3>Финансовые показатели</h3>
             </div>
             <div className="info-stats">
-              <div>
+              <div className="info-stat-item">
                 <span className="info-label">Средний чек</span>
                 <span className="info-value">
-                  {stats.total_sales > 0
+                  {stats.sold > 0
                     ? formatMoney(stats.total_revenue / stats.sold)
                     : '0 сум'
                   }
                 </span>
               </div>
-              <div>
+              <div className="info-stat-item">
                 <span className="info-label">Маржинальность</span>
                 <span className="info-value">
                   {stats.total_revenue > 0

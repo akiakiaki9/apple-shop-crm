@@ -4,7 +4,6 @@ import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navigation from '../../../../components/layout/Navigation';
 import api from '../../../../lib/api';
-import Button from '../../../../components/ui/Button';
 import Modal from '../../../../components/ui/Modal';
 import './new-sale.css';
 
@@ -18,6 +17,7 @@ function NewSaleForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -26,6 +26,15 @@ function NewSaleForm() {
   const [salePrice, setSalePrice] = useState('');
   const [comment, setComment] = useState('');
   const [deviceInfo, setDeviceInfo] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const formatMoney = (amount) => {
     if (!amount) return '0 сум';
@@ -270,19 +279,20 @@ function NewSaleForm() {
       <Navigation />
       <div className="sale-container">
         <header className="sale-header">
-          <div>
+          <div className="sale-header-left">
             <h1 className="sale-title">💰 Новая продажа</h1>
             <p className="sale-subtitle">Оформление продажи товара</p>
           </div>
           <a href="/sales" className="btn-history">
-            📋 История продаж
+            <span className="btn-history-icon">📋</span>
+            <span className="btn-history-text">История продаж</span>
           </a>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">❌</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -290,7 +300,10 @@ function NewSaleForm() {
           <form onSubmit={handleSubmit} className="sale-form">
             {/* Выбор товара */}
             <div className="form-group">
-              <label className="form-label">Товар *</label>
+              <label className="form-label">
+                Товар *
+                {isMobile && <span className="form-hint">обязательно</span>}
+              </label>
               <select
                 value={selectedProduct}
                 onChange={(e) => setSelectedProduct(e.target.value)}
@@ -312,6 +325,7 @@ function NewSaleForm() {
               <div className="form-group">
                 <label className="form-label">
                   {isAccessory(selectedProduct) ? 'Номер товара' : 'IMEI'} (доступные) *
+                  {isMobile && <span className="form-hint">обязательно</span>}
                 </label>
                 {loadingDevices ? (
                   <div className="loading-devices">
@@ -419,7 +433,10 @@ function NewSaleForm() {
 
                 {/* Цена продажи */}
                 <div className="form-group">
-                  <label className="form-label">Цена продажи (сум) *</label>
+                  <label className="form-label">
+                    Цена продажи (сум) *
+                    {isMobile && <span className="form-hint">обязательно</span>}
+                  </label>
                   <input
                     type="number"
                     value={salePrice}
@@ -432,9 +449,10 @@ function NewSaleForm() {
                     step="1"
                   />
                   <div className="price-hint">
-                    💡 Рекомендуемая цена:
+                    <span className="price-hint-icon">💡</span>
+                    <span className="price-hint-text">Рекомендуемая цена:</span>
                     <strong>{getRecommendedPrice().toLocaleString()} сум</strong>
-                    <span className="price-hint-text">(закупка + 20%)</span>
+                    <span className="price-hint-note">(закупка + 20%)</span>
                   </div>
                 </div>
 
@@ -456,7 +474,7 @@ function NewSaleForm() {
                     type="text"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Дополнительная информация"
+                    placeholder={isMobile ? "Дополнительная информация..." : "Дополнительная информация о продаже"}
                     className="form-input"
                     disabled={loading}
                   />
@@ -470,7 +488,10 @@ function NewSaleForm() {
                         Оформление...
                       </>
                     ) : (
-                      '💰 Продать'
+                      <>
+                        <span className="btn-submit-icon">💰</span>
+                        <span className="btn-submit-text">Продать</span>
+                      </>
                     )}
                   </button>
                 </div>

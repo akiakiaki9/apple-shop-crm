@@ -1,13 +1,18 @@
-/* Container */
+/* ===== Container ===== */
 .imei-container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 24px 20px;
+    padding: 24px 20px 40px;
+    min-height: calc(100vh - 64px);
 }
 
-/* Header */
+/* ===== Header ===== */
 .imei-header {
     margin-bottom: 24px;
+}
+
+.imei-header-left {
+    min-width: 200px;
 }
 
 .imei-title {
@@ -15,6 +20,7 @@
     font-weight: 700;
     color: #1a1a2e;
     margin: 0;
+    line-height: 1.2;
 }
 
 .imei-subtitle {
@@ -23,7 +29,7 @@
     margin-top: 4px;
 }
 
-/* Search Card */
+/* ===== Search Card ===== */
 .imei-search-card {
     background: white;
     border-radius: 14px;
@@ -58,6 +64,7 @@
     padding: 0 8px 0 14px;
     font-size: 18px;
     color: #9ca3af;
+    flex-shrink: 0;
 }
 
 .search-input-field {
@@ -68,7 +75,8 @@
     font-size: 15px;
     background: transparent;
     color: #1a1a2e;
-    min-width: 100px;
+    min-width: 60px;
+    min-height: 44px;
 }
 
 .search-input-field::placeholder {
@@ -81,6 +89,9 @@
 }
 
 .search-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 10px 24px;
     background: #4a90e2;
     color: white;
@@ -92,9 +103,8 @@
     transition: all 0.2s;
     font-family: inherit;
     white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    touch-action: manipulation;
+    min-height: 44px;
 }
 
 .search-btn:hover:not(:disabled) {
@@ -103,19 +113,52 @@
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
+.search-btn:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
 .search-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
 }
 
+.search-btn-icon {
+    font-size: 14px;
+}
+
 .search-hint {
     font-size: 13px;
     color: #9ca3af;
     padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* Results */
+.search-hint-icon {
+    font-size: 14px;
+}
+
+/* ===== Spinner Small ===== */
+.spinner-small {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== Results ===== */
 .results-section {
     margin-top: 24px;
 }
@@ -148,6 +191,7 @@
     font-weight: 600;
     font-size: 14px;
     min-width: 24px;
+    min-height: 24px;
 }
 
 .clear-results {
@@ -160,11 +204,17 @@
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
+    touch-action: manipulation;
+    min-height: 34px;
 }
 
 .clear-results:hover {
     background: #f3f4f6;
     border-color: #d1d5db;
+}
+
+.clear-results:active {
+    transform: scale(0.95);
 }
 
 .devices-list {
@@ -173,7 +223,7 @@
     gap: 16px;
 }
 
-/* Device Card */
+/* ===== Device Card ===== */
 .device-card {
     background: white;
     border-radius: 14px;
@@ -194,6 +244,8 @@
     padding: 16px 24px;
     background: #f8fafc;
     border-bottom: 1px solid #f1f3f5;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .device-card-title {
@@ -223,7 +275,7 @@
     border-top: 1px solid #f1f3f5;
 }
 
-/* Device Info Grid */
+/* ===== Device Info Grid ===== */
 .device-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -255,6 +307,7 @@
     font-size: 14px;
     color: #1a1a2e;
     font-weight: 500;
+    word-break: break-word;
 }
 
 .device-info-value.highlight {
@@ -289,13 +342,14 @@
     color: #dc2626;
 }
 
-/* Badge */
+/* ===== Badge ===== */
 .badge {
     display: inline-block;
     padding: 4px 14px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .badge-success {
@@ -318,7 +372,7 @@
     color: #6b7280;
 }
 
-/* Sell Button */
+/* ===== Sell Button ===== */
 .btn-sell {
     display: inline-flex;
     align-items: center;
@@ -333,6 +387,8 @@
     text-decoration: none;
     transition: all 0.2s;
     font-family: inherit;
+    touch-action: manipulation;
+    min-height: 44px;
 }
 
 .btn-sell:hover {
@@ -341,7 +397,15 @@
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
-/* Empty State */
+.btn-sell:active {
+    transform: scale(0.96);
+}
+
+.btn-sell-icon {
+    font-size: 16px;
+}
+
+/* ===== Empty State ===== */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -386,7 +450,7 @@
     font-size: 16px;
 }
 
-/* Alerts */
+/* ===== Alerts ===== */
 .alert {
     padding: 14px 18px;
     border-radius: 10px;
@@ -405,12 +469,21 @@
 
 .alert-icon {
     font-size: 18px;
+    flex-shrink: 0;
 }
 
-/* Responsive */
+.alert-text {
+    flex: 1;
+}
+
+/* ============================================================ */
+/* ===== АДАПТИВНОСТЬ ===== */
+/* ============================================================ */
+
+/* ===== Планшеты ===== */
 @media (max-width: 768px) {
     .imei-container {
-        padding: 16px 12px;
+        padding: 16px 12px 32px;
     }
 
     .imei-title {
@@ -423,14 +496,16 @@
 
     .imei-search-card {
         padding: 20px 16px;
+        border-radius: 12px;
     }
 
     .search-input-group {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
-        padding: 8px;
+        gap: 10px;
+        padding: 12px;
         border: 2px solid #e5e7eb;
+        border-radius: 10px;
     }
 
     .search-input-icon {
@@ -439,10 +514,13 @@
 
     .search-input-field {
         padding: 10px 12px;
-        font-size: 14px;
+        font-size: 16px;
+        /* Предотвращает зум на iOS */
         border: 1px solid #e5e7eb;
-        border-radius: 6px;
+        border-radius: 8px;
         background: #f9fafb;
+        min-height: 48px;
+        width: 100%;
     }
 
     .search-input-field:focus {
@@ -454,6 +532,12 @@
     .search-btn {
         width: 100%;
         justify-content: center;
+        min-height: 48px;
+        font-size: 14px;
+    }
+
+    .search-hint {
+        font-size: 12px;
     }
 
     .device-info-grid {
@@ -498,24 +582,66 @@
     .empty-tips {
         align-items: flex-start;
     }
+
+    .device-info-value.monospace.large {
+        font-size: 16px;
+    }
 }
 
+/* ===== Маленькие телефоны ===== */
 @media (max-width: 480px) {
+    .imei-container {
+        padding: 12px 8px 24px;
+    }
+
     .imei-title {
         font-size: 20px;
     }
 
+    .imei-subtitle {
+        font-size: 13px;
+    }
+
     .imei-search-card {
-        padding: 16px 12px;
+        padding: 14px 12px;
+        border-radius: 10px;
+    }
+
+    .search-input-group {
+        padding: 10px;
+        gap: 8px;
     }
 
     .search-input-field {
+        font-size: 15px;
+        padding: 8px 10px;
+        min-height: 44px;
+    }
+
+    .search-btn {
         font-size: 13px;
-        padding: 8px 12px;
+        padding: 8px 16px;
+        min-height: 44px;
+    }
+
+    .search-btn-text {
+        display: inline;
+    }
+
+    .search-hint {
+        font-size: 11px;
+    }
+
+    .search-hint-text {
+        display: inline;
     }
 
     .device-card-title h2 {
         font-size: 14px;
+    }
+
+    .device-card-icon {
+        font-size: 16px;
     }
 
     .device-info-value {
@@ -523,11 +649,34 @@
     }
 
     .device-info-value.monospace.large {
-        font-size: 15px;
+        font-size: 14px;
+    }
+
+    .device-info-value.highlight {
+        font-size: 14px;
+    }
+
+    .device-info-value.strong {
+        font-size: 14px;
     }
 
     .device-info-label {
         font-size: 11px;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 2px 12px;
+    }
+
+    .btn-sell {
+        font-size: 13px;
+        padding: 8px 16px;
+        min-height: 40px;
+    }
+
+    .btn-sell-icon {
+        font-size: 14px;
     }
 
     .empty-title {
@@ -538,7 +687,240 @@
         font-size: 40px;
     }
 
+    .empty-text {
+        font-size: 13px;
+    }
+
     .tip {
         font-size: 13px;
+    }
+
+    .results-count {
+        font-size: 14px;
+    }
+
+    .count-badge {
+        font-size: 13px;
+        min-height: 22px;
+        padding: 1px 10px;
+    }
+
+    .clear-results {
+        font-size: 12px;
+        padding: 4px 12px;
+        min-height: 30px;
+    }
+
+    .alert {
+        font-size: 13px;
+        padding: 12px 14px;
+    }
+}
+
+/* ===== Очень маленькие телефоны ===== */
+@media (max-width: 380px) {
+    .imei-title {
+        font-size: 18px;
+    }
+
+    .search-input-field {
+        font-size: 14px;
+        min-height: 40px;
+    }
+
+    .search-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+        min-height: 40px;
+    }
+
+    .device-card-body {
+        padding: 12px;
+    }
+
+    .device-info-value {
+        font-size: 12px;
+    }
+
+    .device-info-value.monospace.large {
+        font-size: 13px;
+    }
+
+    .device-info-label {
+        font-size: 10px;
+    }
+}
+
+/* ===== Ландшафтная ориентация на мобилках ===== */
+@media (max-width: 768px) and (max-height: 500px) {
+    .imei-container {
+        padding: 8px 12px 16px;
+        min-height: auto;
+    }
+
+    .imei-header {
+        margin-bottom: 12px;
+    }
+
+    .imei-title {
+        font-size: 18px;
+    }
+
+    .imei-subtitle {
+        font-size: 12px;
+        margin-top: 2px;
+    }
+
+    .imei-search-card {
+        padding: 12px 14px;
+        margin-bottom: 16px;
+    }
+
+    .imei-search-form {
+        gap: 8px;
+    }
+
+    .search-input-group {
+        flex-direction: row;
+        padding: 6px;
+        gap: 8px;
+    }
+
+    .search-input-field {
+        font-size: 13px;
+        padding: 6px 10px;
+        min-height: 34px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+    }
+
+    .search-btn {
+        min-height: 34px;
+        padding: 6px 14px;
+        font-size: 12px;
+        width: auto;
+    }
+
+    .search-btn-text {
+        display: none;
+    }
+
+    .search-btn-icon {
+        font-size: 14px;
+    }
+
+    .search-hint {
+        font-size: 11px;
+    }
+
+    .device-card {
+        border-radius: 10px;
+    }
+
+    .device-card-header {
+        padding: 10px 14px;
+    }
+
+    .device-card-body {
+        padding: 12px 14px;
+    }
+
+    .device-card-footer {
+        padding: 10px 14px;
+    }
+
+    .device-info-grid {
+        gap: 4px 12px;
+    }
+
+    .device-info-item {
+        padding: 2px 0;
+    }
+
+    .device-info-value {
+        font-size: 12px;
+    }
+
+    .device-info-value.monospace.large {
+        font-size: 14px;
+    }
+
+    .device-info-label {
+        font-size: 10px;
+    }
+
+    .btn-sell {
+        min-height: 34px;
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+
+    .btn-sell-text {
+        display: none;
+    }
+
+    .btn-sell-icon {
+        font-size: 16px;
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 2px 10px;
+    }
+
+    .results-section {
+        margin-top: 16px;
+    }
+
+    .results-header {
+        margin-bottom: 10px;
+    }
+
+    .devices-list {
+        gap: 10px;
+    }
+
+    .empty-state {
+        padding: 30px 16px;
+    }
+
+    .empty-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .empty-title {
+        font-size: 15px;
+    }
+
+    .empty-text {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    .tip {
+        font-size: 12px;
+    }
+}
+
+/* ===== Touch устройства - убираем hover при тапе ===== */
+@media (hover: none) {
+    .device-card:hover {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .search-btn:hover:not(:disabled) {
+        transform: none;
+        background: #4a90e2;
+    }
+
+    .btn-sell:hover {
+        transform: none;
+        background: #22c55e;
+    }
+
+    .clear-results:hover {
+        background: none;
+        border-color: #e5e7eb;
     }
 }

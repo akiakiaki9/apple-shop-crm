@@ -1,18 +1,24 @@
-/* Container */
+/* ===== Container ===== */
 .sale-container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 24px 20px;
+    padding: 24px 20px 40px;
+    min-height: calc(100vh - 64px);
 }
 
-/* Header */
+/* ===== Header ===== */
 .sale-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 24px;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
+}
+
+.sale-header-left {
+    flex: 1;
+    min-width: 200px;
 }
 
 .sale-title {
@@ -20,6 +26,7 @@
     font-weight: 700;
     color: #1a1a2e;
     margin: 0;
+    line-height: 1.2;
 }
 
 .sale-subtitle {
@@ -29,6 +36,9 @@
 }
 
 .btn-history {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 10px 20px;
     background: white;
     border: 2px solid #e5e7eb;
@@ -39,19 +49,27 @@
     text-decoration: none;
     transition: all 0.2s;
     white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    min-height: 44px;
 }
 
 .btn-history:hover {
     background: #f8fafc;
     border-color: #4a90e2;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Card */
+.btn-history:active {
+    transform: scale(0.96);
+}
+
+.btn-history-icon {
+    font-size: 16px;
+}
+
+/* ===== Card ===== */
 .sale-card {
     background: white;
     border-radius: 14px;
@@ -65,7 +83,7 @@
     gap: 24px;
 }
 
-/* Form */
+/* ===== Form ===== */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -76,6 +94,16 @@
     font-weight: 600;
     color: #374151;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.form-hint {
+    font-weight: 400;
+    color: #9ca3af;
+    font-size: 12px;
 }
 
 .form-select,
@@ -89,6 +117,7 @@
     background: white;
     color: #1a1a2e;
     font-family: inherit;
+    min-height: 44px;
 }
 
 .form-select:focus,
@@ -105,7 +134,7 @@
     background: #f9fafb;
 }
 
-/* Loading Devices */
+/* ===== Loading Devices ===== */
 .loading-devices {
     display: flex;
     align-items: center;
@@ -123,6 +152,7 @@
     border-top-color: #4a90e2;
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -131,7 +161,7 @@
     }
 }
 
-/* Empty Devices */
+/* ===== Empty Devices ===== */
 .empty-devices {
     display: flex;
     align-items: center;
@@ -159,7 +189,7 @@
     text-decoration: underline;
 }
 
-/* Device Info Card */
+/* ===== Device Info Card ===== */
 .device-info-card {
     background: #f8fafc;
     border-radius: 10px;
@@ -172,6 +202,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
+    flex-wrap: wrap;
 }
 
 .device-info-icon {
@@ -208,6 +239,7 @@
     justify-content: space-between;
     padding: 6px 0;
     border-bottom: 1px solid #f1f3f5;
+    gap: 8px;
 }
 
 .device-info-item.highlight {
@@ -221,12 +253,15 @@
 .device-info-label {
     color: #6b7280;
     font-size: 13px;
+    flex-shrink: 0;
 }
 
 .device-info-value {
     color: #1a1a2e;
     font-size: 14px;
     font-weight: 500;
+    text-align: right;
+    word-break: break-word;
 }
 
 .device-info-value.highlight {
@@ -242,27 +277,31 @@
     font-size: 13px;
 }
 
-/* Price Hint */
+/* ===== Price Hint ===== */
 .price-hint {
     margin-top: 6px;
     font-size: 13px;
     color: #6b7280;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px 8px;
     flex-wrap: wrap;
+}
+
+.price-hint-icon {
+    font-size: 14px;
 }
 
 .price-hint strong {
     color: #4a90e2;
 }
 
-.price-hint-text {
+.price-hint-note {
     color: #9ca3af;
     font-size: 12px;
 }
 
-/* Profit Preview */
+/* ===== Profit Preview ===== */
 .profit-preview {
     padding: 16px 20px;
     border-radius: 10px;
@@ -314,7 +353,7 @@
     color: #dc2626;
 }
 
-/* Sold Message */
+/* ===== Sold Message ===== */
 .device-sold-message {
     padding: 16px;
     background: #fee2e2;
@@ -332,7 +371,7 @@
     font-size: 20px;
 }
 
-/* Form Actions */
+/* ===== Form Actions ===== */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -342,6 +381,9 @@
 }
 
 .btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 12px 40px;
     background: #22c55e;
     color: white;
@@ -351,10 +393,9 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     font-family: inherit;
+    touch-action: manipulation;
+    min-height: 52px;
 }
 
 .btn-submit:hover:not(:disabled) {
@@ -363,13 +404,21 @@
     box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
 }
 
+.btn-submit:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
 .btn-submit:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Spinner */
+.btn-submit-icon {
+    font-size: 18px;
+}
+
+/* ===== Spinner ===== */
 .spinner {
     display: inline-block;
     width: 20px;
@@ -378,9 +427,10 @@
     border-top-color: white;
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
 }
 
-/* Alerts */
+/* ===== Alerts ===== */
 .alert {
     padding: 14px 18px;
     border-radius: 10px;
@@ -399,9 +449,24 @@
 
 .alert-icon {
     font-size: 18px;
+    flex-shrink: 0;
 }
 
-/* Success State */
+.alert-text {
+    flex: 1;
+}
+
+/* ===== Loading State ===== */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* ===== Success State ===== */
 .success-state {
     max-width: 600px;
     margin: 40px auto;
@@ -443,6 +508,7 @@
     justify-content: space-between;
     padding: 6px 0;
     border-bottom: 1px solid #f1f3f5;
+    gap: 12px;
 }
 
 .success-item:last-child {
@@ -459,12 +525,15 @@
 .success-label {
     color: #6b7280;
     font-size: 13px;
+    flex-shrink: 0;
 }
 
 .success-value {
     color: #1a1a2e;
     font-weight: 500;
     font-size: 14px;
+    text-align: right;
+    word-break: break-word;
 }
 
 .success-value.monospace {
@@ -492,6 +561,7 @@
     flex-wrap: wrap;
 }
 
+/* ===== Buttons ===== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -505,6 +575,8 @@
     transition: all 0.2s;
     text-decoration: none;
     font-family: inherit;
+    touch-action: manipulation;
+    min-height: 44px;
 }
 
 .btn-primary {
@@ -518,6 +590,10 @@
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
+.btn-primary:active {
+    transform: scale(0.96);
+}
+
 .btn-secondary {
     background: #e5e7eb;
     color: #374151;
@@ -527,7 +603,11 @@
     background: #d1d5db;
 }
 
-/* Confirm Modal */
+.btn-secondary:active {
+    transform: scale(0.96);
+}
+
+/* ===== Confirm Modal ===== */
 .confirm-modal {
     padding: 8px 0;
 }
@@ -567,15 +647,19 @@
     justify-content: space-between;
     padding: 6px 0;
     font-size: 14px;
+    gap: 12px;
 }
 
 .confirm-label {
     color: #6b7280;
+    flex-shrink: 0;
 }
 
 .confirm-value {
     color: #1a1a2e;
     font-weight: 500;
+    text-align: right;
+    word-break: break-word;
 }
 
 .confirm-value.highlight {
@@ -629,6 +713,8 @@
     transition: all 0.2s;
     font-family: inherit;
     min-width: 140px;
+    min-height: 44px;
+    touch-action: manipulation;
 }
 
 .btn-confirm-cancel {
@@ -638,6 +724,10 @@
 
 .btn-confirm-cancel:hover:not(:disabled) {
     background: #d1d5db;
+}
+
+.btn-confirm-cancel:active:not(:disabled) {
+    transform: scale(0.96);
 }
 
 .btn-confirm-submit {
@@ -651,6 +741,10 @@
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
+.btn-confirm-submit:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
 .btn-confirm-cancel:disabled,
 .btn-confirm-submit:disabled {
     opacity: 0.6;
@@ -658,28 +752,55 @@
     transform: none;
 }
 
-/* Responsive */
+/* ============================================================ */
+/* ===== АДАПТИВНОСТЬ ===== */
+/* ============================================================ */
+
+/* ===== Планшеты ===== */
 @media (max-width: 768px) {
     .sale-container {
-        padding: 16px 12px;
+        padding: 16px 12px 32px;
+    }
+
+    .sale-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .sale-header-left {
+        min-width: unset;
     }
 
     .sale-title {
         font-size: 22px;
     }
 
-    .sale-header {
-        flex-direction: column;
-        align-items: stretch;
+    .sale-subtitle {
+        font-size: 13px;
     }
 
     .btn-history {
         width: 100%;
         justify-content: center;
+        min-height: 48px;
     }
 
     .sale-card {
         padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .sale-form {
+        gap: 20px;
+    }
+
+    .form-select,
+    .form-input {
+        font-size: 16px; /* Предотвращает зум на iOS */
+        min-height: 48px;
+        padding: 10px 12px;
     }
 
     .device-info-grid {
@@ -690,10 +811,24 @@
         grid-column: 1;
     }
 
+    .device-info-card {
+        padding: 16px;
+    }
+
+    .device-info-item {
+        font-size: 13px;
+        padding: 5px 0;
+    }
+
     .profit-preview {
         flex-direction: column;
         align-items: stretch;
         text-align: center;
+        padding: 14px 16px;
+    }
+
+    .profit-value {
+        font-size: 22px;
     }
 
     .profit-status {
@@ -707,6 +842,8 @@
     .btn-submit {
         width: 100%;
         justify-content: center;
+        min-height: 52px;
+        font-size: 15px;
     }
 
     .confirm-actions {
@@ -717,6 +854,7 @@
     .btn-confirm-submit {
         width: 100%;
         min-width: auto;
+        min-height: 48px;
     }
 
     .success-state {
@@ -736,46 +874,362 @@
         width: 100%;
         justify-content: center;
     }
+
+    .price-hint {
+        font-size: 12px;
+        gap: 4px 6px;
+    }
+
+    .confirm-summary {
+        padding: 12px 16px;
+    }
+
+    .confirm-item {
+        font-size: 13px;
+        padding: 5px 0;
+    }
+
+    .confirm-header h3 {
+        font-size: 18px;
+    }
+
+    .total-price {
+        font-size: 16px;
+    }
 }
 
+/* ===== Маленькие телефоны ===== */
 @media (max-width: 480px) {
+    .sale-container {
+        padding: 12px 8px 24px;
+    }
+
     .sale-title {
         font-size: 20px;
     }
 
+    .sale-subtitle {
+        font-size: 12px;
+    }
+
     .sale-card {
-        padding: 16px 12px;
+        padding: 14px 12px;
+        border-radius: 10px;
+    }
+
+    .sale-form {
+        gap: 16px;
+    }
+
+    .form-label {
+        font-size: 13px;
+    }
+
+    .form-hint {
+        font-size: 11px;
+    }
+
+    .form-select,
+    .form-input {
+        font-size: 15px;
+        min-height: 44px;
+        padding: 8px 12px;
     }
 
     .device-info-card {
-        padding: 16px;
+        padding: 14px;
+    }
+
+    .device-info-header h3 {
+        font-size: 14px;
     }
 
     .device-info-item {
+        font-size: 12px;
+    }
+
+    .device-info-value {
         font-size: 13px;
+    }
+
+    .device-info-value.monospace {
+        font-size: 12px;
+    }
+
+    .btn-submit {
+        font-size: 14px;
+        padding: 10px 16px;
+        min-height: 48px;
+    }
+
+    .btn-submit-icon {
+        font-size: 16px;
     }
 
     .profit-value {
         font-size: 20px;
     }
 
-    .confirm-header h3 {
-        font-size: 17px;
-    }
-
-    .confirm-summary {
-        padding: 12px 14px;
-    }
-
-    .confirm-item {
+    .alert {
         font-size: 13px;
-    }
-
-    .total-price {
-        font-size: 16px;
+        padding: 12px 14px;
     }
 
     .success-icon {
         font-size: 48px;
+    }
+
+    .success-title {
+        font-size: 18px;
+    }
+
+    .success-details {
+        padding: 14px;
+    }
+
+    .success-item {
+        font-size: 13px;
+    }
+
+    .success-value.highlight-value {
+        font-size: 16px;
+    }
+
+    .confirm-header .confirm-icon {
+        font-size: 44px;
+    }
+
+    .confirm-header h3 {
+        font-size: 16px;
+    }
+
+    .confirm-summary {
+        padding: 10px 12px;
+    }
+
+    .confirm-item {
+        font-size: 12px;
+        padding: 4px 0;
+    }
+
+    .total-price {
+        font-size: 15px;
+    }
+
+    .btn-confirm-cancel,
+    .btn-confirm-submit {
+        font-size: 13px;
+        padding: 8px 16px;
+        min-height: 44px;
+    }
+
+    .price-hint {
+        font-size: 12px;
+    }
+
+    .price-hint strong {
+        font-size: 13px;
+    }
+
+    .empty-devices {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+/* ===== Очень маленькие телефоны ===== */
+@media (max-width: 380px) {
+    .sale-title {
+        font-size: 18px;
+    }
+
+    .sale-card {
+        padding: 12px 10px;
+    }
+
+    .form-select,
+    .form-input {
+        font-size: 14px;
+        min-height: 40px;
+        padding: 6px 10px;
+    }
+
+    .btn-submit {
+        font-size: 13px;
+        padding: 8px 12px;
+        min-height: 44px;
+    }
+
+    .device-info-item {
+        font-size: 11px;
+    }
+
+    .device-info-value {
+        font-size: 12px;
+    }
+}
+
+/* ===== Ландшафтная ориентация на мобилках ===== */
+@media (max-width: 768px) and (max-height: 500px) {
+    .sale-container {
+        padding: 8px 12px 16px;
+        min-height: auto;
+    }
+
+    .sale-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .sale-header-left {
+        flex: 1;
+        min-width: auto;
+    }
+
+    .sale-title {
+        font-size: 18px;
+    }
+
+    .sale-subtitle {
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    .btn-history {
+        width: auto;
+        padding: 6px 14px;
+        min-height: 34px;
+        font-size: 12px;
+    }
+
+    .btn-history-text {
+        display: none;
+    }
+
+    .btn-history-icon {
+        font-size: 16px;
+    }
+
+    .sale-card {
+        padding: 12px;
+    }
+
+    .sale-form {
+        gap: 12px;
+    }
+
+    .form-group {
+        gap: 4px;
+    }
+
+    .form-select,
+    .form-input {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .form-label {
+        font-size: 12px;
+    }
+
+    .device-info-card {
+        padding: 12px;
+    }
+
+    .device-info-header {
+        margin-bottom: 10px;
+    }
+
+    .device-info-header h3 {
+        font-size: 13px;
+    }
+
+    .device-info-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 12px;
+    }
+
+    .device-info-item {
+        padding: 3px 0;
+        font-size: 12px;
+    }
+
+    .device-info-item.highlight {
+        padding: 4px 8px;
+    }
+
+    .device-info-value {
+        font-size: 12px;
+    }
+
+    .device-info-value.monospace {
+        font-size: 11px;
+    }
+
+    .profit-preview {
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    .profit-value {
+        font-size: 18px;
+    }
+
+    .profit-status {
+        font-size: 12px;
+    }
+
+    .btn-submit {
+        padding: 6px 16px;
+        min-height: 38px;
+        font-size: 13px;
+    }
+
+    .btn-submit-icon {
+        font-size: 14px;
+    }
+
+    .price-hint {
+        font-size: 11px;
+    }
+
+    .price-hint strong {
+        font-size: 12px;
+    }
+
+    .form-actions {
+        padding-top: 10px;
+    }
+}
+
+/* ===== Touch устройства - убираем hover при тапе ===== */
+@media (hover: none) {
+    .btn-history:hover {
+        transform: none;
+        background: white;
+        border-color: #e5e7eb;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+        transform: none;
+    }
+
+    .btn-primary:hover {
+        transform: none;
+    }
+
+    .btn-secondary:hover {
+        transform: none;
+    }
+
+    .btn-confirm-submit:hover:not(:disabled) {
+        transform: none;
+    }
+
+    .btn-confirm-cancel:hover:not(:disabled) {
+        transform: none;
     }
 }

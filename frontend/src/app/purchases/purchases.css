@@ -1,18 +1,24 @@
-/* Container */
+/* ===== Container ===== */
 .purchases-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 24px 20px;
+    padding: 24px 20px 40px;
+    min-height: calc(100vh - 64px);
 }
 
-/* Header */
+/* ===== Header ===== */
 .purchases-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 24px;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
+}
+
+.purchases-header-left {
+    flex: 1;
+    min-width: 200px;
 }
 
 .purchases-title {
@@ -20,19 +26,46 @@
     font-weight: 700;
     color: #1a1a2e;
     margin: 0;
+    line-height: 1.2;
 }
 
 .purchases-subtitle {
     color: #6b7280;
-    font-size: 15px;
+    font-size: 14px;
     margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
 }
 
 .purchases-subtitle strong {
     color: #1a1a2e;
 }
 
+.subtitle-item {
+    white-space: nowrap;
+}
+
+.subtitle-divider {
+    color: #d1d5db;
+}
+
+.purchases-subtitle-mobile {
+    display: none;
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 2px;
+}
+
+.purchases-subtitle-mobile strong {
+    color: #1a1a2e;
+}
+
+/* ===== Button Primary Link ===== */
 .btn-primary-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 12px 24px;
     background: #4a90e2;
     color: white;
@@ -42,10 +75,10 @@
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     white-space: nowrap;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    min-height: 48px;
 }
 
 .btn-primary-link:hover {
@@ -54,7 +87,15 @@
     box-shadow: 0 4px 16px rgba(74, 144, 226, 0.3);
 }
 
-/* Filters */
+.btn-primary-link:active {
+    transform: scale(0.96);
+}
+
+.btn-primary-icon {
+    font-size: 16px;
+}
+
+/* ===== Filters ===== */
 .filters-bar {
     display: flex;
     gap: 12px;
@@ -84,6 +125,7 @@
     padding: 0 12px;
     font-size: 16px;
     color: #9ca3af;
+    flex-shrink: 0;
 }
 
 .search-input {
@@ -94,7 +136,8 @@
     font-size: 14px;
     background: transparent;
     color: #1a1a2e;
-    min-width: 100px;
+    min-width: 60px;
+    min-height: 44px;
 }
 
 .search-input::placeholder {
@@ -109,10 +152,26 @@
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
 }
 
 .search-clear:hover {
     color: #dc2626;
+}
+
+.search-clear:active {
+    transform: scale(0.9);
+}
+
+/* ===== Filter Group ===== */
+.filter-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .filter-date {
@@ -122,7 +181,7 @@
 }
 
 .date-input {
-    padding: 10px 14px;
+    padding: 10px 36px 10px 14px;
     border: 2px solid #e5e7eb;
     border-radius: 10px;
     font-size: 14px;
@@ -131,6 +190,7 @@
     transition: all 0.2s;
     min-width: 150px;
     cursor: pointer;
+    min-height: 44px;
 }
 
 .date-input:focus {
@@ -139,47 +199,80 @@
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
+.date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 4px;
+}
+
 .filter-clear {
     position: absolute;
     right: 8px;
-    padding: 4px 8px;
+    padding: 4px 6px;
     background: none;
     border: none;
     color: #9ca3af;
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
 }
 
 .filter-clear:hover {
     color: #dc2626;
 }
 
+.filter-clear:active {
+    transform: scale(0.9);
+}
+
 .btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 10px 16px;
     background: white;
     border: 2px solid #e5e7eb;
     border-radius: 10px;
-    font-size: 18px;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 44px;
+    touch-action: manipulation;
+    font-family: inherit;
+    font-weight: 500;
+    color: #374151;
 }
 
 .btn-refresh:hover {
     background: #f8fafc;
     border-color: #4a90e2;
-    transform: rotate(45deg);
 }
 
-/* Table */
+.btn-refresh:active {
+    transform: scale(0.96);
+}
+
+.btn-refresh-icon {
+    font-size: 18px;
+}
+
+.btn-refresh-text {
+    font-size: 14px;
+}
+
+/* ===== Table ===== */
 .table-container {
     background: white;
     border-radius: 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     overflow: hidden;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .purchases-table {
@@ -223,7 +316,7 @@
     text-align: right;
 }
 
-/* Purchase Data */
+/* ===== Purchase Data ===== */
 .purchase-id {
     font-weight: 600;
     color: #4a90e2;
@@ -234,6 +327,13 @@
     color: #4a4a6a;
     font-size: 13px;
     white-space: nowrap;
+}
+
+.purchase-date-time {
+    display: block;
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
 }
 
 .purchase-supplier {
@@ -249,6 +349,7 @@
     border-radius: 12px;
     font-weight: 600;
     font-size: 13px;
+    min-width: 30px;
 }
 
 .purchase-amount {
@@ -257,8 +358,17 @@
     font-size: 15px;
 }
 
-/* Receipt Button */
+.currency-symbol {
+    font-weight: 400;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ===== Receipt Button ===== */
 .btn-receipt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 6px 16px;
     background: #e5e7eb;
     border: none;
@@ -270,6 +380,8 @@
     color: #374151;
     font-family: inherit;
     white-space: nowrap;
+    touch-action: manipulation;
+    min-height: 34px;
 }
 
 .btn-receipt:hover {
@@ -278,10 +390,14 @@
 }
 
 .btn-receipt:active {
-    transform: translateY(0);
+    transform: scale(0.95);
 }
 
-/* Table Footer */
+.btn-receipt-icon {
+    font-size: 14px;
+}
+
+/* ===== Table Footer ===== */
 .table-footer {
     padding: 12px 20px;
     background: #fafbfc;
@@ -295,13 +411,14 @@
     color: #1a1a2e;
 }
 
-/* Loading */
+/* ===== Loading ===== */
 .loading-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 400px;
+    padding: 40px 20px;
 }
 
 .loading-spinner {
@@ -325,7 +442,7 @@
     font-size: 16px;
 }
 
-/* Empty State */
+/* ===== Empty State ===== */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -355,7 +472,7 @@
     text-align: center;
 }
 
-/* Alerts */
+/* ===== Alerts ===== */
 .alert {
     padding: 14px 18px;
     border-radius: 10px;
@@ -374,9 +491,14 @@
 
 .alert-icon {
     font-size: 18px;
+    flex-shrink: 0;
 }
 
-/* Buttons */
+.alert-text {
+    flex: 1;
+}
+
+/* ===== Buttons ===== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -390,6 +512,7 @@
     transition: all 0.2s;
     text-decoration: none;
     font-family: inherit;
+    touch-action: manipulation;
 }
 
 .btn-primary {
@@ -403,7 +526,15 @@
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
-/* Responsive */
+.btn-primary:active {
+    transform: scale(0.96);
+}
+
+/* ============================================================ */
+/* ===== АДАПТИВНОСТЬ ===== */
+/* ============================================================ */
+
+/* ===== Планшеты ===== */
 @media (max-width: 1024px) {
     .purchases-table {
         min-width: 500px;
@@ -412,7 +543,18 @@
 
 @media (max-width: 768px) {
     .purchases-container {
-        padding: 16px 12px;
+        padding: 16px 12px 32px;
+    }
+
+    .purchases-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .purchases-header-left {
+        min-width: unset;
     }
 
     .purchases-title {
@@ -420,26 +562,44 @@
     }
 
     .purchases-subtitle {
-        font-size: 14px;
+        font-size: 13px;
     }
 
-    .purchases-header {
-        flex-direction: column;
-        align-items: stretch;
+    .purchases-subtitle-mobile {
+        display: block;
+    }
+
+    .desktop-only {
+        display: none !important;
     }
 
     .btn-primary-link {
         width: 100%;
         justify-content: center;
+        min-height: 48px;
     }
 
     .filters-bar {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        margin-bottom: 18px;
     }
 
     .search-box {
         min-width: auto;
+    }
+
+    .search-input {
+        min-height: 44px;
+        font-size: 16px;
+        /* Предотвращает зум на iOS */
+    }
+
+    .filter-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
     }
 
     .filter-date {
@@ -449,11 +609,18 @@
     .date-input {
         width: 100%;
         min-width: auto;
+        min-height: 44px;
+        font-size: 16px;
     }
 
     .btn-refresh {
         width: 100%;
         justify-content: center;
+        min-height: 44px;
+    }
+
+    .hide-mobile {
+        display: none !important;
     }
 
     .purchases-table {
@@ -467,12 +634,21 @@
     }
 
     .purchase-amount {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .btn-receipt {
         font-size: 12px;
         padding: 4px 12px;
+        min-height: 30px;
+    }
+
+    .btn-receipt-text {
+        display: none;
+    }
+
+    .btn-receipt-icon {
+        font-size: 16px;
     }
 
     .table-footer {
@@ -481,9 +657,19 @@
     }
 }
 
+/* ===== Маленькие телефоны ===== */
 @media (max-width: 480px) {
+    .purchases-container {
+        padding: 12px 8px 24px;
+    }
+
     .purchases-title {
         font-size: 20px;
+    }
+
+    .purchases-subtitle,
+    .purchases-subtitle-mobile {
+        font-size: 12px;
     }
 
     .purchases-table {
@@ -496,6 +682,11 @@
         font-size: 12px;
     }
 
+    .purchases-table th {
+        font-size: 10px;
+        padding: 10px 10px;
+    }
+
     .purchase-id {
         font-size: 12px;
     }
@@ -504,18 +695,32 @@
         font-size: 11px;
     }
 
+    .purchase-date-time {
+        font-size: 10px;
+    }
+
     .purchase-count {
         font-size: 11px;
         padding: 1px 10px;
+        min-width: 24px;
     }
 
     .purchase-amount {
-        font-size: 12px;
+        font-size: 13px;
+    }
+
+    .currency-symbol {
+        font-size: 10px;
     }
 
     .btn-receipt {
         font-size: 11px;
         padding: 3px 10px;
+        min-height: 28px;
+    }
+
+    .btn-receipt-icon {
+        font-size: 14px;
     }
 
     .table-footer {
@@ -530,23 +735,249 @@
     .empty-icon {
         font-size: 40px;
     }
+
+    .empty-text {
+        font-size: 13px;
+    }
+
+    .btn-primary-link {
+        font-size: 14px;
+        padding: 10px 16px;
+        min-height: 44px;
+    }
+
+    .search-input {
+        font-size: 15px;
+        min-height: 40px;
+    }
+
+    .date-input {
+        font-size: 15px;
+        min-height: 40px;
+    }
+
+    .btn-refresh {
+        min-height: 40px;
+        font-size: 13px;
+    }
 }
 
-/* Scrollbar styling for table */
-.purchases-table::-webkit-scrollbar {
+/* ===== Очень маленькие телефоны ===== */
+@media (max-width: 380px) {
+    .purchases-table {
+        min-width: 300px;
+    }
+
+    .purchases-table th,
+    .purchases-table td {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .purchases-table th {
+        font-size: 9px;
+        padding: 8px 8px;
+    }
+
+    .purchase-id {
+        font-size: 11px;
+    }
+
+    .purchase-date {
+        font-size: 10px;
+    }
+
+    .purchase-count {
+        font-size: 10px;
+        padding: 1px 8px;
+    }
+
+    .purchase-amount {
+        font-size: 12px;
+    }
+
+    .btn-receipt {
+        font-size: 10px;
+        padding: 2px 8px;
+        min-height: 24px;
+    }
+
+    .btn-receipt-icon {
+        font-size: 12px;
+    }
+}
+
+/* ===== Ландшафтная ориентация на мобилках ===== */
+@media (max-width: 768px) and (max-height: 500px) {
+    .purchases-container {
+        padding: 8px 12px 16px;
+        min-height: auto;
+    }
+
+    .purchases-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .purchases-header-left {
+        flex: 1;
+        min-width: auto;
+    }
+
+    .purchases-title {
+        font-size: 18px;
+    }
+
+    .purchases-subtitle {
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    .purchases-subtitle-mobile {
+        display: none;
+    }
+
+    .desktop-only {
+        display: inline !important;
+    }
+
+    .btn-primary-link {
+        width: auto;
+        padding: 6px 14px;
+        min-height: 34px;
+        font-size: 12px;
+    }
+
+    .btn-primary-text {
+        display: none;
+    }
+
+    .btn-primary-icon {
+        font-size: 16px;
+    }
+
+    .filters-bar {
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .filter-group {
+        flex-direction: row;
+        width: auto;
+        gap: 8px;
+    }
+
+    .search-input {
+        min-height: 34px;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .date-input {
+        min-height: 34px;
+        padding: 6px 32px 6px 10px;
+        font-size: 13px;
+        min-width: 120px;
+    }
+
+    .btn-refresh {
+        min-height: 34px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .btn-refresh-text {
+        display: none;
+    }
+
+    .btn-refresh-icon {
+        font-size: 16px;
+    }
+
+    .purchases-table {
+        min-width: 400px;
+    }
+
+    .purchases-table th,
+    .purchases-table td {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .purchases-table th {
+        font-size: 9px;
+        padding: 8px 10px;
+    }
+
+    .purchase-date {
+        font-size: 11px;
+    }
+
+    .purchase-amount {
+        font-size: 13px;
+    }
+
+    .btn-receipt {
+        min-height: 26px;
+        padding: 3px 10px;
+        font-size: 11px;
+    }
+
+    .table-footer {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* ===== Touch устройства - убираем hover при тапе ===== */
+@media (hover: none) {
+    .purchase-row:hover {
+        background: transparent;
+    }
+
+    .btn-primary-link:hover {
+        transform: none;
+    }
+
+    .btn-refresh:hover {
+        background: white;
+        border-color: #e5e7eb;
+    }
+
+    .btn-receipt:hover {
+        transform: none;
+        background: #e5e7eb;
+    }
+
+    .btn:hover {
+        transform: none;
+    }
+}
+
+/* ===== Scrollbar styling ===== */
+.table-scroll::-webkit-scrollbar {
     height: 6px;
 }
 
-.purchases-table::-webkit-scrollbar-track {
+.table-scroll::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
 }
 
-.purchases-table::-webkit-scrollbar-thumb {
+.table-scroll::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
 }
 
-.purchases-table::-webkit-scrollbar-thumb:hover {
+.table-scroll::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
+}
+
+/* Firefox scrollbar */
+.table-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f1f1f1;
 }

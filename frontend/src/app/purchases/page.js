@@ -14,6 +14,16 @@ export default function PurchasesPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     loadPurchases();
@@ -40,12 +50,30 @@ export default function PurchasesPage() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
+    if (isMobile) {
+      return date.toLocaleString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
     return date.toLocaleString('ru-RU', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
+    });
+  };
+
+  const formatDateShort = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
     });
   };
 
@@ -85,23 +113,36 @@ export default function PurchasesPage() {
       <Navigation />
       <div className="purchases-container">
         <header className="purchases-header">
-          <div>
+          <div className="purchases-header-left">
             <h1 className="purchases-title">📋 История приходов</h1>
             <p className="purchases-subtitle">
-              Всего приходов: <strong>{totalPurchases}</strong> |
-              Товаров: <strong>{totalItems}</strong> шт. |
+              <span className="subtitle-item">
+                Всего приходов: <strong>{totalPurchases}</strong>
+              </span>
+              <span className="subtitle-divider">|</span>
+              <span className="subtitle-item">
+                Товаров: <strong>{totalItems}</strong> шт.
+              </span>
+              <span className="subtitle-divider desktop-only">|</span>
+              <span className="subtitle-item desktop-only">
+                Сумма: <strong>{totalAmount.toLocaleString()}</strong> сум
+              </span>
+            </p>
+            {/* Мобильная версия суммы */}
+            <p className="purchases-subtitle-mobile">
               Сумма: <strong>{totalAmount.toLocaleString()}</strong> сум
             </p>
           </div>
           <a href="/purchases/new" className="btn-primary-link">
-            ➕ Новый приход
+            <span className="btn-primary-icon">➕</span>
+            <span className="btn-primary-text">Новый приход</span>
           </a>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">⚠️</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -111,7 +152,7 @@ export default function PurchasesPage() {
             <span className="search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Поиск по ID или поставщику..."
+              placeholder={isMobile ? "Поиск..." : "Поиск по ID или поставщику..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -121,36 +162,42 @@ export default function PurchasesPage() {
                 className="search-clear"
                 onClick={() => setSearchTerm('')}
                 title="Очистить"
+                type="button"
               >
                 ✕
               </button>
             )}
           </div>
-          <div className="filter-date">
-            <input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="date-input"
-              title="Фильтр по дате"
-            />
-            {filterDate && (
-              <button
-                className="filter-clear"
-                onClick={() => setFilterDate('')}
-                title="Сбросить фильтр"
-              >
-                ✕
-              </button>
-            )}
+          <div className="filter-group">
+            <div className="filter-date">
+              <input
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+                className="date-input"
+                title="Фильтр по дате"
+              />
+              {filterDate && (
+                <button
+                  className="filter-clear"
+                  onClick={() => setFilterDate('')}
+                  title="Сбросить фильтр"
+                  type="button"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <button
+              onClick={loadPurchases}
+              className="btn-refresh"
+              title="Обновить"
+              type="button"
+            >
+              <span className="btn-refresh-icon">🔄</span>
+              <span className="btn-refresh-text">Обновить</span>
+            </button>
           </div>
-          <button
-            onClick={loadPurchases}
-            className="btn-refresh"
-            title="Обновить"
-          >
-            🔄
-          </button>
         </div>
 
         {filteredPurchases.length === 0 ? (
@@ -173,56 +220,69 @@ export default function PurchasesPage() {
           </div>
         ) : (
           <div className="table-container">
-            <table className="purchases-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Дата</th>
-                  <th>Поставщик</th>
-                  <th className="text-center">Кол-во</th>
-                  <th className="text-right">Сумма</th>
-                  <th className="text-center">Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPurchases.map(purchase => (
-                  <tr key={purchase.id} className="purchase-row">
-                    <td>
-                      <span className="purchase-id">#{purchase.id}</span>
-                    </td>
-                    <td>
-                      <span className="purchase-date">
-                        {formatDate(purchase.created_at)}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="purchase-supplier">
-                        {purchase.supplier_name || '—'}
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <span className="purchase-count">
-                        {purchase.total_count || 0} шт.
-                      </span>
-                    </td>
-                    <td className="text-right">
-                      <span className="purchase-amount">
-                        {(purchase.total_price || 0).toLocaleString()} сум
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <button
-                        className="btn-receipt"
-                        onClick={() => openReceipt(purchase)}
-                        title="Показать чек"
-                      >
-                        🧾 Чек
-                      </button>
-                    </td>
+            <div className="table-scroll">
+              <table className="purchases-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Дата</th>
+                    <th className="hide-mobile">Поставщик</th>
+                    <th className="text-center">Кол-во</th>
+                    <th className="text-right">Сумма</th>
+                    <th className="text-center">Действия</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredPurchases.map(purchase => (
+                    <tr key={purchase.id} className="purchase-row">
+                      <td>
+                        <span className="purchase-id">#{purchase.id}</span>
+                      </td>
+                      <td>
+                        <span className="purchase-date">
+                          {isMobile ? formatDateShort(purchase.created_at) : formatDate(purchase.created_at)}
+                        </span>
+                        {isMobile && (
+                          <span className="purchase-date-time">
+                            {new Date(purchase.created_at).toLocaleTimeString('ru-RU', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        )}
+                      </td>
+                      <td className="hide-mobile">
+                        <span className="purchase-supplier">
+                          {purchase.supplier_name || '—'}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="purchase-count">
+                          {purchase.total_count || 0}
+                        </span>
+                      </td>
+                      <td className="text-right">
+                        <span className="purchase-amount">
+                          {(purchase.total_price || 0).toLocaleString()}
+                          <span className="currency-symbol"> сум</span>
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          className="btn-receipt"
+                          onClick={() => openReceipt(purchase)}
+                          title="Показать чек"
+                          type="button"
+                        >
+                          <span className="btn-receipt-icon">🧾</span>
+                          <span className="btn-receipt-text">Чек</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* Информация о количестве записей */}
             <div className="table-footer">

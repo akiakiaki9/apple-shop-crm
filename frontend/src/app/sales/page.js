@@ -14,6 +14,16 @@ export default function SalesPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     loadSales();
@@ -46,6 +56,15 @@ export default function SalesPage() {
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
+    });
+  };
+
+  const formatDateShort = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
     });
   };
 
@@ -94,26 +113,50 @@ export default function SalesPage() {
       <Navigation />
       <div className="sales-container">
         <header className="sales-header">
-          <div>
+          <div className="sales-header-left">
             <h1 className="sales-title">💰 История продаж</h1>
             <p className="sales-subtitle">
-              Всего продаж: <strong>{totalSales}</strong> |
-              Товаров: <strong>{totalItems}</strong> шт. |
-              Выручка: <strong>{formatMoney(totalRevenue)}</strong> |
-              Прибыль: <strong className={totalProfit >= 0 ? 'text-success' : 'text-danger'}>
-                {formatMoney(totalProfit)}
-              </strong>
+              <span className="subtitle-item">
+                Всего продаж: <strong>{totalSales}</strong>
+              </span>
+              <span className="subtitle-divider">|</span>
+              <span className="subtitle-item">
+                Товаров: <strong>{totalItems}</strong> шт.
+              </span>
+              <span className="subtitle-divider desktop-only">|</span>
+              <span className="subtitle-item desktop-only">
+                Выручка: <strong>{formatMoney(totalRevenue)}</strong>
+              </span>
+              <span className="subtitle-divider desktop-only">|</span>
+              <span className="subtitle-item desktop-only">
+                Прибыль: <strong className={totalProfit >= 0 ? 'text-success' : 'text-danger'}>
+                  {formatMoney(totalProfit)}
+                </strong>
+              </span>
+            </p>
+            {/* Мобильная версия статистики */}
+            <p className="sales-subtitle-mobile">
+              <span className="subtitle-item">
+                Выручка: <strong>{formatMoney(totalRevenue)}</strong>
+              </span>
+              <span className="subtitle-divider">|</span>
+              <span className="subtitle-item">
+                Прибыль: <strong className={totalProfit >= 0 ? 'text-success' : 'text-danger'}>
+                  {formatMoney(totalProfit)}
+                </strong>
+              </span>
             </p>
           </div>
           <a href="/sales/new" className="btn-primary-link">
-            ➕ Новая продажа
+            <span className="btn-primary-icon">➕</span>
+            <span className="btn-primary-text">Новая продажа</span>
           </a>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">⚠️</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -123,7 +166,7 @@ export default function SalesPage() {
             <span className="search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Поиск по названию или IMEI..."
+              placeholder={isMobile ? "Поиск..." : "Поиск по названию или IMEI..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -133,36 +176,42 @@ export default function SalesPage() {
                 className="search-clear"
                 onClick={() => setSearchTerm('')}
                 title="Очистить"
+                type="button"
               >
                 ✕
               </button>
             )}
           </div>
-          <div className="filter-date">
-            <input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="date-input"
-              title="Фильтр по дате"
-            />
-            {filterDate && (
-              <button
-                className="filter-clear"
-                onClick={() => setFilterDate('')}
-                title="Сбросить фильтр"
-              >
-                ✕
-              </button>
-            )}
+          <div className="filter-group">
+            <div className="filter-date">
+              <input
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+                className="date-input"
+                title="Фильтр по дате"
+              />
+              {filterDate && (
+                <button
+                  className="filter-clear"
+                  onClick={() => setFilterDate('')}
+                  title="Сбросить фильтр"
+                  type="button"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <button
+              onClick={loadSales}
+              className="btn-refresh"
+              title="Обновить"
+              type="button"
+            >
+              <span className="btn-refresh-icon">🔄</span>
+              <span className="btn-refresh-text">Обновить</span>
+            </button>
           </div>
-          <button
-            onClick={loadSales}
-            className="btn-refresh"
-            title="Обновить"
-          >
-            🔄
-          </button>
         </div>
 
         {filteredSales.length === 0 ? (
@@ -185,83 +234,101 @@ export default function SalesPage() {
           </div>
         ) : (
           <div className="table-container">
-            <table className="sales-table">
-              <thead>
-                <tr>
-                  <th>Дата</th>
-                  <th>Товар</th>
-                  <th>IMEI</th>
-                  <th className="text-right">Закупка</th>
-                  <th className="text-right">Продажа</th>
-                  <th className="text-right">Прибыль</th>
-                  <th className="text-center">Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSales.map(sale => {
-                  const profit = Number(sale.profit || 0);
-                  const isProfitable = profit >= 0;
+            <div className="table-scroll">
+              <table className="sales-table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Товар</th>
+                    <th className="hide-mobile">IMEI</th>
+                    <th className="hide-mobile text-right">Закупка</th>
+                    <th className="text-right">Продажа</th>
+                    <th className="text-right">Прибыль</th>
+                    <th className="text-center">Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSales.map(sale => {
+                    const profit = Number(sale.profit || 0);
+                    const isProfitable = profit >= 0;
 
-                  return (
-                    <tr key={sale.id} className="sale-row">
-                      <td>
-                        <span className="sale-date">
-                          {formatDate(sale.created_at)}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="sale-product">
-                          <span className="product-name">{sale.device_info?.product_name}</span>
-                          {sale.device_info?.product_type === 'PHONE' ? (
-                            <span className="product-specs">
-                              {sale.device_info?.product_ram} • {sale.device_info?.product_storage} • {sale.device_info?.product_color}
-                            </span>
-                          ) : (
-                            <span className="product-specs">Аксессуар</span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <span className="sale-imei">
-                          {sale.device_info?.imei || '—'}
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <span className="sale-price purchase">
-                          {formatMoney(sale.device_info?.purchase_price)}
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <span className="sale-price sale">
-                          {formatMoney(sale.sale_price)}
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <span className={`sale-profit ${isProfitable ? 'profit-positive' : 'profit-negative'}`}>
-                          {formatMoney(profit)}
-                          <span className="profit-icon">
-                            {isProfitable ? '📈' : '📉'}
+                    return (
+                      <tr key={sale.id} className="sale-row">
+                        <td>
+                          <span className="sale-date">
+                            {isMobile ? formatDateShort(sale.created_at) : formatDate(sale.created_at)}
                           </span>
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <button
-                          className="btn-receipt"
-                          onClick={() => openReceipt(sale)}
-                          title="Показать чек"
-                        >
-                          🧾 Чек
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                          {isMobile && (
+                            <span className="sale-date-time">
+                              {new Date(sale.created_at).toLocaleTimeString('ru-RU', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <div className="sale-product">
+                            <span className="product-name">{sale.device_info?.product_name}</span>
+                            {/* Мобильная версия - показываем IMEI под названием */}
+                            {isMobile && sale.device_info?.imei && (
+                              <span className="product-imei-mobile">
+                                IMEI: {sale.device_info?.imei}
+                              </span>
+                            )}
+                            {sale.device_info?.product_type === 'PHONE' ? (
+                              <span className="product-specs">
+                                {sale.device_info?.product_ram} • {sale.device_info?.product_storage} • {sale.device_info?.product_color}
+                              </span>
+                            ) : (
+                              <span className="product-specs">Аксессуар</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="hide-mobile">
+                          <span className="sale-imei">
+                            {sale.device_info?.imei || '—'}
+                          </span>
+                        </td>
+                        <td className="hide-mobile text-right">
+                          <span className="sale-price purchase">
+                            {formatMoney(sale.device_info?.purchase_price)}
+                          </span>
+                        </td>
+                        <td className="text-right">
+                          <span className="sale-price sale">
+                            {formatMoney(sale.sale_price)}
+                          </span>
+                        </td>
+                        <td className="text-right">
+                          <span className={`sale-profit ${isProfitable ? 'profit-positive' : 'profit-negative'}`}>
+                            {formatMoney(profit)}
+                            <span className="profit-icon">
+                              {isProfitable ? '📈' : '📉'}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            className="btn-receipt"
+                            onClick={() => openReceipt(sale)}
+                            title="Показать чек"
+                            type="button"
+                          >
+                            <span className="btn-receipt-icon">🧾</span>
+                            <span className="btn-receipt-text">Чек</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
 
             {/* Информация о количестве записей */}
             <div className="table-footer">
-              <span>
+              <span className="footer-info">
                 Показано: <strong>{filteredSales.length}</strong> из {sales.length} продаж
               </span>
               {filteredSales.length > 0 && (

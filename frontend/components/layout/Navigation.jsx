@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { API_BASE_URL } from '../../lib/api';
 import {
@@ -25,6 +25,8 @@ export default function Navigation() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,14 +42,44 @@ export default function Navigation() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Закрытие меню при клике вне его области
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isMobileMenuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Блокировка скролла при открытом меню
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   const navItems = [
-    { href: '/', label: 'Dashboard', icon: FaHome },
-    { href: '/inventory', label: 'Остатки', icon: FaBoxes },
-    { href: '/purchases/new', label: 'Приход', icon: FaPlusCircle },
-    { href: '/sales/new', label: 'Продажа', icon: FaMoneyBillWave },
-    { href: '/purchases', label: 'История', icon: FaHistory },
-    { href: '/analytics', label: 'Аналитика', icon: FaChartBar },
-    { href: '/imei', label: 'Поиск IMEI', icon: FaSearch },
+    { href: '/', label: 'Главная', icon: FaHome, shortLabel: 'Главная' },
+    { href: '/inventory', label: 'Остатки', icon: FaBoxes, shortLabel: 'Остатки' },
+    { href: '/purchases/new', label: 'Приход', icon: FaPlusCircle, shortLabel: 'Приход' },
+    { href: '/sales/new', label: 'Продажа', icon: FaMoneyBillWave, shortLabel: 'Продажа' },
+    { href: '/purchases', label: 'История', icon: FaHistory, shortLabel: 'История' },
+    { href: '/analytics', label: 'Аналитика', icon: FaChartBar, shortLabel: 'Аналитика' },
+    { href: '/imei', label: 'Поиск IMEI', icon: FaSearch, shortLabel: 'IMEI' },
   ];
 
   const handleLogout = async () => {
@@ -103,20 +135,27 @@ export default function Navigation() {
                 />
               </div>
               <span className="brand-text">APPLE STORE</span>
+              <span className="brand-text-short">AS</span>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="mobile-menu-btn"
+            ref={buttonRef}
+            className={`mobile-menu-btn ${isMobileMenuOpen ? 'open' : ''}`}
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
 
           {/* Navigation Links */}
-          <ul className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
+          <ul
+            ref={menuRef}
+            className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}
+            role="navigation"
+          >
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href ||
@@ -130,6 +169,7 @@ export default function Navigation() {
                   >
                     <Icon className="nav-icon" />
                     <span className="nav-label">{item.label}</span>
+                    <span className="nav-label-short">{item.shortLabel}</span>
                   </Link>
                 </li>
               );
@@ -142,6 +182,7 @@ export default function Navigation() {
               >
                 <FaSignOutAlt className="nav-icon" />
                 <span className="nav-label">{isLoggingOut ? 'Выход...' : 'Выйти'}</span>
+                <span className="nav-label-short">{isLoggingOut ? '...' : 'Выйти'}</span>
               </button>
             </li>
           </ul>

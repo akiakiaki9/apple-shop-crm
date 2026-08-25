@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navigation from '../../../../components/layout/Navigation';
 import api from '../../../../lib/api';
@@ -17,6 +17,24 @@ export default function NewPurchasePage() {
   const [customColor, setCustomColor] = useState('');
   const [customStorage, setCustomStorage] = useState('');
   const [customRam, setCustomRam] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+  const [ramOptions, setRamOptions] = useState([
+    '4 GB', '6 GB', '8 GB', '12 GB', '16 GB', '18 GB', '24 GB', '32 GB', '36 GB'
+  ]);
+  const [storageOptions, setStorageOptions] = useState([
+    '64 GB', '128 GB', '256 GB', '512 GB', '1 TB', '2 TB'
+  ]);
+  const [colorOptions, setColorOptions] = useState([
+    'Black', 'White', 'Blue', 'Red', 'Green',
+    'Yellow', 'Purple', 'Natural', 'Gold', 'Silver',
+    'Pink', 'Orange', 'Gray', 'Brown', 'Coral', 'Dark Blue',
+    'Titanium', 'Graphite', 'Sierra Blue', 'Alpine Green',
+    'Starry Purple MEANA', 'Nebula Red MEANA', 'Sapphire Blue RK',
+    'Aurora Gold RK', 'Lumina Forest MMN', 'Eclipse BLUE MMN',
+    'Cappuccino Brown RK', 'Ice White RK', 'Plum Purple MMN',
+    'Ice Blue MMN', 'Aurora Green RK', 'Mist White RK', 'Aurora Blue RK'
+  ]);
+
   const [formData, setFormData] = useState({
     product_name: '',
     product_type: 'PHONE',
@@ -31,25 +49,14 @@ export default function NewPurchasePage() {
     imeis: '',
   });
 
-  const ramOptions = [
-    '4 GB', '6 GB', '8 GB', '12 GB', '16 GB', '18 GB', '24 GB', '32 GB', '36 GB'
-  ];
-
-  const storageOptions = [
-    '64 GB', '128 GB', '256 GB', '512 GB', '1 TB', '2 TB'
-  ];
-
-  const colorOptions = [
-    'Black', 'White', 'Blue', 'Red', 'Green',
-    'Yellow', 'Purple', 'Natural', 'Gold', 'Silver',
-    'Pink', 'Orange', 'Gray', 'Brown', 'Coral', 'Dark Blue',
-    'Titanium', 'Graphite', 'Sierra Blue', 'Alpine Green',
-    'Starry Purple MEANA', 'Nebula Red MEANA', 'Sapphire Blue RK',
-    'Aurora Gold RK', 'Lumina Forest MMN', 'Eclipse BLUE MMN',
-    'Cappuccino Brown RK', 'Ice White RK', 'Plum Purple MMN',
-    'Ice White RK', 'Ice Blue MMN', 'Aurora Green RK',
-    'Mist White RK', 'Aurora Blue RK'
-  ];
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,17 +78,17 @@ export default function NewPurchasePage() {
 
   const handleAddCustom = (type) => {
     if (type === 'color' && customColor && !colorOptions.includes(customColor)) {
-      colorOptions.push(customColor);
+      setColorOptions(prev => [...prev, customColor]);
       setFormData(prev => ({ ...prev, color: customColor }));
       setCustomColor('');
     }
     if (type === 'storage' && customStorage && !storageOptions.includes(customStorage)) {
-      storageOptions.push(customStorage);
+      setStorageOptions(prev => [...prev, customStorage]);
       setFormData(prev => ({ ...prev, storage: customStorage }));
       setCustomStorage('');
     }
     if (type === 'ram' && customRam && !ramOptions.includes(customRam)) {
-      ramOptions.push(customRam);
+      setRamOptions(prev => [...prev, customRam]);
       setFormData(prev => ({ ...prev, ram: customRam }));
       setCustomRam('');
     }
@@ -166,7 +173,6 @@ export default function NewPurchasePage() {
         imeis: '',
       }));
 
-      // Автоматически скрыть уведомление через 8 секунд
       setTimeout(() => setSuccess(null), 8000);
 
     } catch (err) {
@@ -190,19 +196,20 @@ export default function NewPurchasePage() {
       <Navigation />
       <div className="purchase-container">
         <header className="purchase-header">
-          <div>
+          <div className="purchase-header-left">
             <h1 className="purchase-title">📦 Новый приход</h1>
             <p className="purchase-subtitle">Добавление товаров на склад</p>
           </div>
           <a href="/purchases" className="btn-history">
-            📋 История приходов
+            <span className="btn-history-icon">📋</span>
+            <span className="btn-history-text">История приходов</span>
           </a>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">❌</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -250,7 +257,7 @@ export default function NewPurchasePage() {
                   disabled={loading}
                 >
                   <span className="type-icon">📱</span>
-                  Телефон
+                  <span className="type-label">Телефон</span>
                 </button>
                 <button
                   type="button"
@@ -259,7 +266,7 @@ export default function NewPurchasePage() {
                   disabled={loading}
                 >
                   <span className="type-icon">🎧</span>
-                  Аксессуар
+                  <span className="type-label">Аксессуар</span>
                 </button>
               </div>
             </div>
@@ -267,20 +274,26 @@ export default function NewPurchasePage() {
             {/* Основные поля */}
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Название *</label>
+                <label className="form-label">
+                  Название *
+                  {isMobile && <span className="form-hint">обязательно</span>}
+                </label>
                 <input
                   type="text"
                   name="product_name"
                   value={formData.product_name}
                   onChange={handleChange}
-                  placeholder={productType === 'PHONE' ? 'Например: iPhone 15 Pro Max' : 'Например: Чехол для iPhone 15'}
+                  placeholder={productType === 'PHONE' ? 'iPhone 15 Pro Max' : 'Чехол для iPhone 15'}
                   className="form-input"
                   required
                   disabled={loading}
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Цена закупки (сум) *</label>
+                <label className="form-label">
+                  Цена закупки (сум) *
+                  {isMobile && <span className="form-hint">обязательно</span>}
+                </label>
                 <input
                   type="number"
                   name="purchase_price"
@@ -320,7 +333,7 @@ export default function NewPurchasePage() {
                         type="text"
                         value={customRam}
                         onChange={(e) => setCustomRam(e.target.value)}
-                        placeholder="Своя"
+                        placeholder={isMobile ? "Своя" : "Своя RAM"}
                         className="form-input-small"
                         disabled={loading}
                       />
@@ -329,6 +342,7 @@ export default function NewPurchasePage() {
                         className="btn-add-custom"
                         onClick={() => handleAddCustom('ram')}
                         disabled={loading || !customRam}
+                        aria-label="Добавить свой вариант"
                       >
                         +
                       </button>
@@ -358,7 +372,7 @@ export default function NewPurchasePage() {
                           type="text"
                           value={customStorage}
                           onChange={(e) => setCustomStorage(e.target.value)}
-                          placeholder="Своя"
+                          placeholder={isMobile ? "Своя" : "Своя память"}
                           className="form-input-small"
                           disabled={loading}
                         />
@@ -367,6 +381,7 @@ export default function NewPurchasePage() {
                           className="btn-add-custom"
                           onClick={() => handleAddCustom('storage')}
                           disabled={loading || !customStorage}
+                          aria-label="Добавить свой вариант"
                         >
                           +
                         </button>
@@ -394,7 +409,7 @@ export default function NewPurchasePage() {
                           type="text"
                           value={customColor}
                           onChange={(e) => setCustomColor(e.target.value)}
-                          placeholder="Свой"
+                          placeholder={isMobile ? "Свой" : "Свой цвет"}
                           className="form-input-small"
                           disabled={loading}
                         />
@@ -403,6 +418,7 @@ export default function NewPurchasePage() {
                           className="btn-add-custom"
                           onClick={() => handleAddCustom('color')}
                           disabled={loading || !customColor}
+                          aria-label="Добавить свой вариант"
                         >
                           +
                         </button>
@@ -442,7 +458,7 @@ export default function NewPurchasePage() {
                     name="extra_expenses_comment"
                     value={formData.extra_expenses_comment}
                     onChange={handleChange}
-                    placeholder="Например: Доставка, упаковка"
+                    placeholder={isMobile ? "Доставка, упаковка..." : "Например: Доставка, упаковка"}
                     className="form-input"
                     disabled={loading}
                   />
@@ -492,7 +508,7 @@ export default function NewPurchasePage() {
                   ? "358000000000001\n358000000000002\n358000000000003"
                   : "SN-2024-001\nSN-2024-002\nSN-2024-003"
                 }
-                rows="6"
+                rows={isMobile ? 4 : 6}
                 className="form-textarea"
                 required
                 disabled={loading}
@@ -519,7 +535,10 @@ export default function NewPurchasePage() {
                     Сохранение...
                   </>
                 ) : (
-                  '📦 Добавить приход'
+                  <>
+                    <span className="btn-submit-icon">📦</span>
+                    <span className="btn-submit-text">Добавить приход</span>
+                  </>
                 )}
               </button>
             </div>

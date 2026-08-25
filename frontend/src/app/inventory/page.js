@@ -17,6 +17,17 @@ export default function InventoryPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL');
+  const [isMobile, setIsMobile] = useState(false);
+  const [expandedMobile, setExpandedMobile] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     loadInventory();
@@ -59,6 +70,7 @@ export default function InventoryPage() {
   const loadAvailableDevices = async (productId) => {
     if (expandedProduct === productId) {
       setExpandedProduct(null);
+      setExpandedMobile(null);
       setAvailableDevices([]);
       return;
     }
@@ -68,6 +80,9 @@ export default function InventoryPage() {
       const response = await api.get(`/products/${productId}/available_imeis/`);
       setAvailableDevices(response.data.devices || []);
       setExpandedProduct(productId);
+      if (isMobile) {
+        setExpandedMobile(productId);
+      }
     } catch (error) {
       console.error('Ошибка загрузки устройств:', error);
     } finally {
@@ -145,22 +160,23 @@ export default function InventoryPage() {
       <Navigation />
       <div className="inventory-container">
         <header className="inventory-header">
-          <div>
+          <div className="inventory-header-left">
             <h1 className="inventory-title">📱 Остатки товаров</h1>
             <p className="inventory-subtitle">
-              Всего товаров: <strong>{products.length}</strong> |
+              Всего товаров: <strong>{products.length}</strong> &nbsp;|&nbsp;
               В наличии: <strong className="text-success">{totalInStock}</strong> шт.
             </p>
           </div>
           <button onClick={loadInventory} className="btn-refresh">
-            🔄 Обновить
+            <span className="btn-refresh-icon">🔄</span>
+            <span className="btn-refresh-text">Обновить</span>
           </button>
         </header>
 
         {error && (
           <div className="alert alert-error">
             <span className="alert-icon">⚠️</span>
-            {error}
+            <span className="alert-text">{error}</span>
           </div>
         )}
 
@@ -170,7 +186,7 @@ export default function InventoryPage() {
             <span className="search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Поиск по названию или серийному номеру..."
+              placeholder={isMobile ? "Поиск..." : "Поиск по названию или серийному номеру..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -212,8 +228,8 @@ export default function InventoryPage() {
                 <tr>
                   <th>Тип</th>
                   <th>Товар</th>
-                  <th>Характеристики</th>
-                  <th>Серийный номер</th>
+                  <th className="hide-mobile">Характеристики</th>
+                  <th className="hide-mobile">Серийный номер</th>
                   <th className="text-center">Остаток</th>
                   <th className="text-center">Действия</th>
                 </tr>
@@ -229,9 +245,24 @@ export default function InventoryPage() {
                         </span>
                       </td>
                       <td>
-                        <div className="product-name">{product.name}</div>
+                        <div className="product-name">
+                          {product.name}
+                          {/* Мобильная версия - показываем характеристики под названием */}
+                          {isMobile && (product.ram || product.storage || product.color) && (
+                            <div className="product-specs-mobile">
+                              {product.ram && <span className="spec">{product.ram}</span>}
+                              {product.storage && <span className="spec">{product.storage}</span>}
+                              {product.color && <span className="spec">{product.color}</span>}
+                            </div>
+                          )}
+                          {isMobile && product.serial_number && (
+                            <div className="product-serial-mobile">
+                              SN: {product.serial_number}
+                            </div>
+                          )}
+                        </div>
                       </td>
-                      <td>
+                      <td className="hide-mobile">
                         <div className="product-specs">
                           {product.ram && <span className="spec">RAM: {product.ram}</span>}
                           {product.storage && <span className="spec">Память: {product.storage}</span>}
@@ -241,7 +272,7 @@ export default function InventoryPage() {
                           )}
                         </div>
                       </td>
-                      <td>
+                      <td className="hide-mobile">
                         <span className="serial-number">
                           {product.serial_number || '—'}
                         </span>
@@ -260,9 +291,9 @@ export default function InventoryPage() {
                           {loadingDevices && expandedProduct !== product.id ? (
                             <span className="spinner-small"></span>
                           ) : expandedProduct === product.id ? (
-                            '📕 Скрыть'
+                            isMobile ? '✕' : '📕 Скрыть'
                           ) : (
-                            '📋 Номера'
+                            isMobile ? '📋' : '📋 Номера'
                           )}
                         </button>
                       </td>
@@ -299,7 +330,7 @@ export default function InventoryPage() {
                                     <span className="device-chip-id">
                                       {device.identifier || device.imei || `ID: ${device.id}`}
                                     </span>
-                                    {device.purchase_price && (
+                                    {!isMobile && device.purchase_price && (
                                       <span className="device-chip-price">
                                         {formatMoney(device.purchase_price)}
                                       </span>

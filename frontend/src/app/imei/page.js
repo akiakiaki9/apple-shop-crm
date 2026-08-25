@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from '../../../components/layout/Navigation';
 import api from '../../../lib/api';
-import Button from '../../../components/ui/Button';
 import './imei.css';
 
 export default function IMEIPage() {
@@ -12,6 +11,16 @@ export default function IMEIPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [searched, setSearched] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -197,7 +206,8 @@ export default function IMEIPage() {
                             href={`/sales/new?device=${device.id}`}
                             className="btn-sell"
                         >
-                            🛒 Продать этот товар
+                            <span className="btn-sell-icon">🛒</span>
+                            <span className="btn-sell-text">Продать этот товар</span>
                         </a>
                     </div>
                 )}
@@ -210,8 +220,8 @@ export default function IMEIPage() {
             <Navigation />
             <div className="imei-container">
                 <header className="imei-header">
-                    <div>
-                        <h1 className="imei-title">🔍 Поиск по IMEI / Серийному номеру</h1>
+                    <div className="imei-header-left">
+                        <h1 className="imei-title">🔍 Поиск по IMEI</h1>
                         <p className="imei-subtitle">
                             Быстрый поиск устройства по IMEI, серийному номеру или названию товара
                         </p>
@@ -226,17 +236,34 @@ export default function IMEIPage() {
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Введите IMEI, серийный номер или название товара"
+                                placeholder={isMobile ? "IMEI, SN или название..." : "Введите IMEI, серийный номер или название товара"}
                                 className="search-input-field"
                                 required
                                 disabled={loading}
                             />
-                            <Button type="submit" loading={loading} className="search-btn">
-                                Найти
-                            </Button>
+                            <button
+                                type="submit"
+                                className="search-btn"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <span className="spinner-small"></span>
+                                        Поиск...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="search-btn-icon">🔍</span>
+                                        <span className="search-btn-text">Найти</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                         <div className="search-hint">
-                            💡 Например: 358000000000001, SN-2024-001 или iPhone 15
+                            <span className="search-hint-icon">💡</span>
+                            <span className="search-hint-text">
+                                Например: 358000000000001, SN-2024-001 или iPhone 15
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -244,7 +271,7 @@ export default function IMEIPage() {
                 {error && (
                     <div className="alert alert-error">
                         <span className="alert-icon">⚠️</span>
-                        {error}
+                        <span className="alert-text">{error}</span>
                     </div>
                 )}
 
@@ -257,13 +284,14 @@ export default function IMEIPage() {
                                 </span>
                                 {devices.length === 1 ? 'устройство найдено' : 'устройств найдено'}
                             </span>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setDevices([]);
                                     setSearched(false);
                                     setSearchQuery('');
                                 }}
                                 className="clear-results"
+                                type="button"
                             >
                                 ✕ Очистить
                             </button>

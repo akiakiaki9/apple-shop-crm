@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navigation from '../../../components/layout/Navigation';
 import api from '../../../lib/api';
+import './analytics.css';
 
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState('all');
@@ -11,6 +12,7 @@ export default function AnalyticsPage() {
   const [sales, setSales] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [totalExtraExpenses, setTotalExtraExpenses] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const periods = [
     { value: 'today', label: 'Сегодня' },
@@ -23,32 +25,36 @@ export default function AnalyticsPage() {
   ];
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     loadAnalytics();
   }, [period]);
 
   const loadAnalytics = async () => {
     setLoading(true);
     try {
-      // Загружаем аналитику продаж
       const salesResponse = await api.get(`/sales/analytics/?period=${period}`);
       setAnalytics(salesResponse.data);
 
-      // Загружаем все продажи
       const allSales = await api.get('/sales/');
       setSales(allSales.data);
 
-      // Загружаем все приходы
       const allPurchases = await api.get('/purchases/');
       setPurchases(allPurchases.data);
 
-      // Считаем общие доп расходы по приходам за период
       let extraSum = 0;
       if (period === 'all') {
         allPurchases.data.forEach(p => {
           extraSum += Number(p.extra_expenses) || 0;
         });
       } else {
-        // Фильтруем по периоду
         const now = new Date();
         let startDate = new Date();
         if (period === 'today') {
@@ -65,7 +71,7 @@ export default function AnalyticsPage() {
         } else if (period === 'last_month') {
           startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         }
-        
+
         allPurchases.data.forEach(p => {
           const pDate = new Date(p.created_at);
           if (pDate >= startDate) {
@@ -87,21 +93,67 @@ export default function AnalyticsPage() {
     return Number(amount).toLocaleString() + ' сум';
   };
 
+  const StatCard = ({ icon, title, value, color, subtitle, small = false }) => (
+    <div className={`stat-card stat-card-${color}`}>
+      <div className="stat-card-inner">
+        <div className="stat-card-header">
+          <span className="stat-card-icon">{icon}</span>
+          <h3 className="stat-card-title">{title}</h3>
+        </div>
+        <div className={`stat-card-value ${small ? 'stat-card-value-small' : ''}`}>
+          {value}
+        </div>
+        {subtitle && <div className="stat-card-subtitle">{subtitle}</div>}
+      </div>
+    </div>
+  );
+
+  const InfoItem = ({ label, value, highlight = false }) => (
+    <div className={`info-item ${highlight ? 'info-item-highlight' : ''}`}>
+      <span className="info-item-label">{label}</span>
+      <span className="info-item-value">{value}</span>
+    </div>
+  );
+
+  const totalPurchasesAmount = purchases.reduce((sum, p) => sum + (p.total_price || 0), 0);
+  const totalPurchasesExtra = purchases.reduce((sum, p) => sum + (Number(p.extra_expenses) || 0), 0);
+  const totalDevices = purchases.reduce((sum, p) => sum + (p.total_count || 0), 0);
+  const avgProfit = analytics?.total_count > 0 ? analytics.total_profit / analytics.total_count : 0;
+  const avgPrice = analytics?.total_count > 0 ? analytics.total_revenue / analytics.total_count : 0;
+  const margin = analytics?.total_revenue > 0 ? (analytics.total_profit / analytics.total_revenue) * 100 : 0;
+  const avgExtra = purchases.length > 0 ? totalExtraExpenses / purchases.length : 0;
+
   return (
     <>
       <Navigation />
-      <div className="container" style={{ padding: '20px' }}>
-        <h1>📊 Аналитика</h1>
+      <div className="analytics-container">
+        <header className="analytics-header">
+          <div className="analytics-header-left">
+            <h1 className="analytics-title">📊 Аналитика</h1>
+            <p className="analytics-subtitle">
+              {periods.find(p => p.value === period)?.label || 'Все время'}
+            </p>
+          </div>
+          <button
+            onClick={loadAnalytics}
+            className="btn-refresh"
+            disabled={loading}
+            type="button"
+          >
+            <span className="btn-refresh-icon">🔄</span>
+            <span className="btn-refresh-text">Обновить</span>
+          </button>
+        </header>
 
         {/* Фильтр периода */}
-        <div className="card">
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+        <div className="period-filter">
+          <div className="period-filter-scroll">
             {periods.map(p => (
               <button
                 key={p.value}
-                className={`btn ${period === p.value ? 'btn-primary' : 'btn-secondary'}`}
+                className={`period-btn ${period === p.value ? 'active' : ''}`}
                 onClick={() => setPeriod(p.value)}
-                style={{ fontSize: '14px' }}
+                type="button"
               >
                 {p.label}
               </button>
@@ -110,121 +162,101 @@ export default function AnalyticsPage() {
         </div>
 
         {loading ? (
-          <div className="card">Загрузка...</div>
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Загрузка аналитики...</p>
+          </div>
         ) : analytics && (
           <>
             {/* Основные показатели */}
-            <div className="grid-4">
-              <div className="card" style={{ borderLeft: '4px solid #2563eb' }}>
-                <h3 style={{ color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>📱 Продано</h3>
-                <div style={{ fontSize: '28px', fontWeight: 'bold' }}>
-                  {analytics.total_count || 0}
-                </div>
-              </div>
-              <div className="card" style={{ borderLeft: '4px solid #22c55e' }}>
-                <h3 style={{ color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>💰 Выручка</h3>
-                <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#16a34a' }}>
-                  {formatMoney(analytics.total_revenue)}
-                </div>
-              </div>
-              <div className="card" style={{ borderLeft: '4px solid #f59e0b' }}>
-                <h3 style={{ color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>📦 Себестоимость</h3>
-                <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#d97706' }}>
-                  {formatMoney(analytics.total_cost)}
-                </div>
-              </div>
-              <div className="card" style={{ borderLeft: '4px solid #ef4444' }}>
-                <h3 style={{ color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>💵 Прибыль</h3>
-                <div style={{ 
-                  fontSize: '28px', 
-                  fontWeight: 'bold', 
-                  color: (analytics.total_profit || 0) >= 0 ? '#16a34a' : '#dc2626' 
-                }}>
-                  {formatMoney(analytics.total_profit)}
-                </div>
-              </div>
+            <div className="stats-grid stats-grid-4">
+              <StatCard
+                icon="📱"
+                title="Продано"
+                value={analytics.total_count || 0}
+                color="blue"
+              />
+              <StatCard
+                icon="💰"
+                title="Выручка"
+                value={formatMoney(analytics.total_revenue)}
+                color="green"
+              />
+              <StatCard
+                icon="📦"
+                title="Себестоимость"
+                value={formatMoney(analytics.total_cost)}
+                color="orange"
+              />
+              <StatCard
+                icon="💵"
+                title="Прибыль"
+                value={formatMoney(analytics.total_profit)}
+                color={analytics.total_profit >= 0 ? 'green' : 'red'}
+              />
             </div>
 
             {/* Дополнительные расходы */}
-            <div className="card" style={{ borderLeft: '4px solid #8b5cf6', background: '#f5f3ff' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h3 style={{ color: '#6b7280', fontSize: '14px', marginBottom: '4px' }}>📊 Дополнительные расходы за период</h3>
-                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#7c3aed' }}>
-                    {formatMoney(totalExtraExpenses)}
+            <div className="extra-expenses-card">
+              <div className="extra-expenses-content">
+                <div className="extra-expenses-left">
+                  <span className="extra-expenses-icon">📊</span>
+                  <div>
+                    <div className="extra-expenses-label">Дополнительные расходы за период</div>
+                    <div className="extra-expenses-value">{formatMoney(totalExtraExpenses)}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                <div className="extra-expenses-period">
                   {periods.find(p => p.value === period)?.label || 'Все время'}
                 </div>
               </div>
             </div>
 
             {/* Дополнительная статистика */}
-            <div className="grid-2">
-              <div className="card">
-                <h3 className="card-title">📊 Средние показатели</h3>
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Средняя прибыль с телефона</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {analytics.total_count > 0 
-                        ? formatMoney(analytics.total_profit / analytics.total_count)
-                        : '0 сум'}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Средняя цена продажи</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {analytics.total_count > 0 
-                        ? formatMoney(analytics.total_revenue / analytics.total_count)
-                        : '0 сум'}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Маржинальность</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {analytics.total_revenue > 0 
-                        ? `${Math.round((analytics.total_profit / analytics.total_revenue) * 100)}%`
-                        : '0%'}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Средние доп. расходы</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {purchases.length > 0 
-                        ? formatMoney(totalExtraExpenses / purchases.length)
-                        : '0 сум'}
-                    </div>
-                  </div>
+            <div className="info-grid">
+              <div className="info-card">
+                <h3 className="info-card-title">📊 Средние показатели</h3>
+                <div className="info-list">
+                  <InfoItem
+                    label="Средняя прибыль с товара"
+                    value={formatMoney(avgProfit)}
+                  />
+                  <InfoItem
+                    label="Средняя цена продажи"
+                    value={formatMoney(avgPrice)}
+                  />
+                  <InfoItem
+                    label="Маржинальность"
+                    value={margin > 0 ? `${Math.round(margin)}%` : '0%'}
+                    highlight={margin > 0}
+                  />
+                  <InfoItem
+                    label="Средние доп. расходы"
+                    value={formatMoney(avgExtra)}
+                  />
                 </div>
               </div>
 
-              <div className="card">
-                <h3 className="card-title">📦 Информация по приходам</h3>
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Всего приходов</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>{purchases.length}</div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Всего вложено в товар</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {formatMoney(purchases.reduce((sum, p) => sum + (p.total_price || 0), 0))}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Всего доп. расходов</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600', color: '#7c3aed' }}>
-                      {formatMoney(purchases.reduce((sum, p) => sum + (Number(p.extra_expenses) || 0), 0))}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#6b7280', fontSize: '13px' }}>Всего устройств</div>
-                    <div style={{ fontSize: '18px', fontWeight: '600' }}>
-                      {purchases.reduce((sum, p) => sum + (p.total_count || 0), 0)}
-                    </div>
-                  </div>
+              <div className="info-card">
+                <h3 className="info-card-title">📦 Информация по приходам</h3>
+                <div className="info-list">
+                  <InfoItem
+                    label="Всего приходов"
+                    value={purchases.length}
+                  />
+                  <InfoItem
+                    label="Всего вложено в товар"
+                    value={formatMoney(totalPurchasesAmount)}
+                  />
+                  <InfoItem
+                    label="Всего доп. расходов"
+                    value={formatMoney(totalPurchasesExtra)}
+                    highlight
+                  />
+                  <InfoItem
+                    label="Всего устройств"
+                    value={totalDevices}
+                  />
                 </div>
               </div>
             </div>
