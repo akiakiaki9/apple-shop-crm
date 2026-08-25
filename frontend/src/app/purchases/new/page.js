@@ -42,7 +42,7 @@ export default function NewPurchasePage() {
   const colorOptions = [
     'Black', 'White', 'Blue', 'Red', 'Green',
     'Yellow', 'Purple', 'Natural', 'Gold', 'Silver',
-    'Pink', 'Orange', 'Gray', 'Brown', 'Coral',
+    'Pink', 'Orange', 'Gray', 'Brown', 'Coral', 'Dark Blue',
     'Titanium', 'Graphite', 'Sierra Blue', 'Alpine Green',
     'Starry Purple MEANA', 'Nebula Red MEANA', 'Sapphire Blue RK',
     'Aurora Gold RK', 'Lumina Forest MMN', 'Eclipse BLUE MMN',
